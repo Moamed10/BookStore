@@ -29,7 +29,7 @@ const BooksCard = ({ book }) => {
                 ? book.description.slice(0, 80) + "..."
                 : book.description}
             </p>
-            <p className="font-medium mb-5">
+            <p className="font-medium mb-5 ">
               ${book.newPrice}{" "}
               <span className="line-through font-normal ml-2">
                 ${book.oldPrice}
