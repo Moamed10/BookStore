@@ -1,14 +1,23 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { FaGoogle } from "react-icons/fa";
+import { useForm } from "react-hook-form";
 
 const Login = () => {
   const [meassage, setMeassage] = useState("");
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm();
+  const onSubmit = (data) => console.log(data);
+
   return (
     <div className="h-[calc(100vh-120px)] flex justify-center items-center">
       <div className="w-full max-w-sm mx-auto bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
         <h2 className="text-xl font-semibold mb-4">Log in</h2>
-        <form>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-4">
             <label
               className="block text-gray-700 text-sm font-bold mb-2"
@@ -17,6 +26,7 @@ const Login = () => {
               Email
             </label>
             <input
+              {...register("email", { required: true })}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="email"
               name="email"
@@ -32,11 +42,12 @@ const Login = () => {
               Password
             </label>
             <input
+              {...register("password", { required: true })}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="password"
               type="password"
               placeholder="Password"
-              name="Password"
+              name="password" // Match the key used in `register`
             />
           </div>
           {meassage && (
