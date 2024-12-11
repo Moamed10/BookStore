@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { FaSearch } from "react-icons/fa"; // Import the FaSearch icon
-import "C:/matrix_coding512/BookStore/frontend/src/App.css"; // Correct path (avoid absolute paths if possible)
+import "../../App.css"; // Correct path (avoid absolute paths if possible)
 import booksImage from "../../assets/img1.png"; // Correct relative path
 import { Link } from "react-router-dom";
 console.log(booksImage);
