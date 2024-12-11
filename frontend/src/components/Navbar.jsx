@@ -11,7 +11,7 @@ const navigation = [
 ];
 
 const Navbar = () => {
-  const currentuser = false; // Toggle this to false for testing non-logged-in state
+  const currentuser = true; // Toggle this to false for testing non-logged-in state
   const [isDropdownOpen, setIsDropDownOpen] = useState(false);
 
   return (
@@ -72,7 +72,7 @@ const Navbar = () => {
                   className="bg-blue-600 hover:bg-blue-700 text-white p-2 sm:px-6 px-4 rounded-sm flex items-center"
                 >
                   <FaCartShopping className="text-xl" />
-                  <span className="text-sm font-semibold sm:ml-2 ml-1">
+                  <span className="text-sm font-secondary sm:ml-2 ml-1">
                     Cart
                   </span>
                 </Link>
@@ -81,13 +81,13 @@ const Navbar = () => {
               <div className="flex space-x-4">
                 <Link
                   to="/signup"
-                  className="text-sm font-medium hover:text-gray-300"
+                  className="text-sm font-medium font-primary hover:text-gray-300"
                 >
                   Sign Up
                 </Link>
                 <Link
                   to="/login"
-                  className="text-sm font-primary hover:text-gray-300"
+                  className="text-sm font-medium font-primary hover:text-gray-300"
                 >
                   Login
                 </Link>
