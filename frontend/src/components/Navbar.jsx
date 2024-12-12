@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import avatrImg from "../assets/user.png";
-import logo from "../assets/logo2.png"; // Replace with your logo path
+import logo from "../assets/logo2.png";
 import { FaCartShopping } from "react-icons/fa6";
 
 const navigation = [
@@ -11,7 +11,7 @@ const navigation = [
 ];
 
 const Navbar = () => {
-  const currentuser = true; // Toggle this to false for testing non-logged-in state
+  const currentuser = false; // Toggle this to false for testing non-logged-in state
   const [isDropdownOpen, setIsDropDownOpen] = useState(false);
 
   return (
