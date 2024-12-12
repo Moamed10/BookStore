@@ -4,27 +4,26 @@ const schema = mongoose.Schema;
 const userSchema = new schema({
     userName: {
         type: String,
-        required: true
+        required: true,
     },
     email: {
         type: String,
-        required: true
+        required: true,
     },
     password: {
         type: String,
         required: true,
-        minlength:8
+        minlength: 8,
     },
-    role:{
-        type:String,
-        enum:['client','admin'],
-        default:'client'
+    role: {
+        type: String,
+        enum: ["reader", "writer "],
+        default: "reader",
     },
-    createAt:{
-        type:Date,
-        default:Date.now
-    }
-
+    createAt: {
+        type: Date,
+        default: Date.now,
+    },
 });
 
-module.exports  = mongoose.model("user", userSchema);
+module.exports = mongoose.model("user", userSchema);
