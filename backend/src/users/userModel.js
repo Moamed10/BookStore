@@ -17,8 +17,8 @@ const userSchema = new schema({
     },
     role: {
         type: String,
-        enum: ["reader", "writer "],
-        default: "reader",
+        enum: ["buyer", "seller "],
+        default: "buyer",
     },
     createAt: {
         type: Date,

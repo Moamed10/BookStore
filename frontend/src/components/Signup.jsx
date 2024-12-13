@@ -98,8 +98,8 @@ const Signup = () => {
               name="role"
             >
               <option value="">Select Role</option>
-              <option value="Buyer">Writer </option>
-              <option value="Seller">Reader </option>
+              <option value="Buyer">Buyer </option>
+              <option value="Seller">Seller </option>
             </select>
             {errors.role && (
               <p className="text-red-500 text-xs italic">
