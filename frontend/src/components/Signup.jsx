@@ -2,8 +2,14 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { FaGoogle } from "react-icons/fa";
 import { useForm } from "react-hook-form";
+import axios from "axios";
 
 const Signup = () => {
+  const [formData, setFormData] = useState({
+    userName: "",
+    email: "",
+    password: "",
+  });
   const [message, setMessage] = useState("");
   const {
     register,
@@ -12,8 +18,28 @@ const Signup = () => {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const onSubmit = async (e) => {
+    e.preventDefault(); 
+
+    try {
+    
+      const response = await axios.post("http://localhost:3100/signup-user", formData);
+
+      
+      setMessage(response.data.message);
+    } catch (error) {
+     
+      if (error.response) {
+        setMessage(error.response.data.error); 
+      } else {
+        setMessage("An error occurred. Please try again.");
+      }
+    }
   };
 
   return (
@@ -35,6 +61,9 @@ const Signup = () => {
               name="userName"
               type="text"
               placeholder="Your User Name"
+              value={formData.userName}
+              onChange={handleChange}
+              required
             />
             {errors.userName && (
               <p className="text-red-500 text-xs italic">
@@ -56,6 +85,9 @@ const Signup = () => {
               name="email"
               type="email"
               placeholder="Email Address"
+              value={formData.email}
+              onChange={handleChange}
+              required
             />
             {errors.email && (
               <p className="text-red-500 text-xs italic">
@@ -77,6 +109,9 @@ const Signup = () => {
               type="password"
               placeholder="Password"
               name="password"
+              value={formData.password}
+              onChange={handleChange}
+              required
             />
             {errors.password && (
               <p className="text-red-500 text-xs italic">
@@ -135,6 +170,7 @@ const Signup = () => {
           &copy;2025 Endeless-Library. All rights reserved.
         </p>
       </div>
+      {message && <p></p>}
     </div>
   );
 };
