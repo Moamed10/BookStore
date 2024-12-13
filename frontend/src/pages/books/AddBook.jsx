@@ -24,7 +24,7 @@ const AddBook = () => {
     formData.append("trending", data.trending);
     formData.append("oldPrice", data.oldPrice);
     formData.append("newPrice", data.newPrice);
-    formData.append("coverImage", data.coverImage[0]); // File upload
+    formData.append("coverImage", data.coverImage[0]);
 
     try {
       const response = await fetch("/api/books", {
