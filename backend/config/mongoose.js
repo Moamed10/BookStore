@@ -1,13 +1,10 @@
-require("dotenv").config();
 const mongoose = require("mongoose");
 
-const dbLink = process.env.DB_LINK;
-
 mongoose
-  .connect(dbLink)
+  .connect(process.env.DB_LINK)
   .then(() => {
-    console.log("Connected to the database!");
+    console.log("DB is connected");
   })
-  .catch((error) => {
-    console.error("Error connecting to the database", error);
+  .catch((err) => {
+    console.error("Error connecting to DB:", err);
   });
