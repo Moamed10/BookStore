@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import { useState } from "react";
 
 const ProfilePage = () => {
   const [userInfo, setUserInfo] = useState({
-    userName: '',
-    email: '',
-    password: '',
-    photo: '',
+    userName: "",
+    email: "",
+    password: "",
+    photo: "",
   });
 
   const [isEditing, setIsEditing] = useState(false);
@@ -15,10 +15,20 @@ const ProfilePage = () => {
     setUserInfo({ ...userInfo, [name]: value });
   };
 
+  const handlePhotoChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setUserInfo({ ...userInfo, photo: reader.result });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleSave = () => {
     setIsEditing(false);
-   
-    console.log('Updated user info:', userInfo);
+    console.log("Updated user info:", userInfo);
   };
 
   return (
@@ -38,7 +48,7 @@ const ProfilePage = () => {
           )}
           {!isEditing ? (
             <h2 className="mt-4 text-xl font-semibold text-gray-800">
-              {userInfo.userName || 'No Name Provided'}
+              {userInfo.userName || "No Name Provided"}
             </h2>
           ) : (
             <input
@@ -52,16 +62,33 @@ const ProfilePage = () => {
           )}
         </div>
 
+        {isEditing && (
+          <div className="mt-4">
+            <label
+              htmlFor="photoUpload"
+              className="block text-gray-600 font-medium"
+            >
+              Upload Photo:
+            </label>
+            <input
+              id="photoUpload"
+              type="file"
+              accept="image/*"
+              onChange={handlePhotoChange}
+              className="mt-2 block w-full text-gray-600"
+            />
+          </div>
+        )}
+
         <div className="mt-6 space-y-4">
           {!isEditing ? (
             <>
               <p className="text-gray-600">
-                <strong>Email:</strong>{' '}
-                {userInfo.email || 'No Email Provided'}
+                <strong>Email:</strong> {userInfo.email || "No Email Provided"}
               </p>
               <p className="text-gray-600">
-                <strong>Password:</strong>{' '}
-                {userInfo.password || 'No password Provided'}
+                <strong>Password:</strong>{" "}
+                {userInfo.password || "No password Provided"}
               </p>
             </>
           ) : (
