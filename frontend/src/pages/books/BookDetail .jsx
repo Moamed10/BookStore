@@ -10,15 +10,17 @@ import { Pagination, Navigation } from "swiper/modules";
 
 const BookDetail = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
+
   const [book, setBook] = useState(null);
   const [books, setBooks] = useState([]);
-  const navigate = useNavigate();
 
   useEffect(() => {
     fetch("/Books.json")
       .then((res) => res.json())
       .then((data) => {
         setBooks(data);
+
         const selectedBook = data.find((b) => b._id === parseInt(id));
         if (selectedBook) {
           setBook(selectedBook);
@@ -41,7 +43,9 @@ const BookDetail = () => {
 
   return (
     <div className="container mx-auto py-12">
+      {/* Book Details Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+        {/* Book Image */}
         <div className="flex justify-start">
           <img
             src={getImgUrl(book.coverImage) || "/path/to/default-image.jpg"}
@@ -50,21 +54,23 @@ const BookDetail = () => {
           />
         </div>
 
+        {/* Book Info */}
         <div className="flex flex-col space-y-6">
           <h1 className="text-4xl font-bold text-gray-800">{book.title}</h1>
           <p className="text-lg text-gray-600">{book.description}</p>
           <h6 className="text-2xl font-semibold">${book.newPrice}</h6>
-          <button className="bg-blue-600 text-white py-3 px-8 rounded-lg hover:bg-blue-700 transition-colors duration-300">
+          <button className="bg-blue-600 text-white py-3 px-8 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-300">
             Add to Cart
           </button>
         </div>
       </div>
 
+      {/* Recommended Books Section */}
       <div className="mt-8">
         <h2 className="text-3xl font-semibold mb-4">Recommended Books</h2>
         <Swiper
           slidesPerView={1}
-          navigation={true}
+          navigation
           spaceBetween={20}
           breakpoints={{
             640: { slidesPerView: 1, spaceBetween: 20 },
@@ -75,8 +81,8 @@ const BookDetail = () => {
           modules={[Pagination, Navigation]}
           className="mySwiper"
         >
-          {recommendedBooks.map((book, index) => (
-            <SwiperSlide key={index}>
+          {recommendedBooks.map((book) => (
+            <SwiperSlide key={book._id}>
               <BooksCard book={book} />
             </SwiperSlide>
           ))}
