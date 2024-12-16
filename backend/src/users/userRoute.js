@@ -1,9 +1,8 @@
-// const express = require('express');
-// const router = express.Router();
-// const { signupUser } = require('./userController');
+const express = require("express");
+const router = express.Router();
+const userController = require("./userController"); // Make sure the path is correct
 
-// router.get('/signup',userController.signupUser)
-// router.post('/signup-user',userController.signupUser)
+// POST route for signup
+router.post("/signup", userController.signup);
 
- 
-// module.exports = router;
+module.exports = router;

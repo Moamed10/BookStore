@@ -1,26 +1,26 @@
 require("dotenv").config();
 const express = require("express");
-const userControl=require("../backend/src/users/userController")
-// const userRoute=require('./src/users/userRoute')
-require("./config/mongoose")
-const Cors=require("cors")
+const cors = require("cors");
+require("./config/mongoose"); // MongoDB connection
+const userRoutes = require("./src/users/userRoute"); // Adjust path as needed
 
 const app = express();
+
+// Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(
+  cors({
+    origin: "http://localhost:5173", // Frontend URL
+    methods: ["GET", "POST", "PUT", "DELETE"],
+  })
+);
 
+// Use the router file for user-related routes
+app.use(userRoutes);
 
-app.use(Cors({
-  methods:["GET", "POST", "UPDATE", "DELETE"],
-  origin:[5173,"http://localhost:5173/"]
-}));
-
-app.get("/signup",userControl.renderSignup)
-app.post("/signup-user",userControl.signup)
-
-// app.use('/signup-user',userRoute)
-
-const port = process.env.PORT || 3800;
+// Start server
+const port = process.env.PORT || 5000;
 app.listen(port, () => {
-  console.log(`app is on ${port}`);
+  console.log(`Server is running on port ${port}`);
 });

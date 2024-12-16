@@ -1,59 +1,40 @@
-const bcrypt = require('bcryptjs');
-const userModel = require('./userModel');
+const bcrypt = require("bcrypt");
+const User = require("./userModel");
 
+// Sign up user
+exports.signup = async (req, res) => {
+  const { username, email, password, role } = req.body;
 
-const renderSignup = (req, res) => {
-  res.render("signup", {
-      err: ""
-  })
-}
+  try {
+    // Validate input data
+    if (!username || !email || !password) {
+      return res.status(400).json({ error: "All fields are required" });
+    }
 
-const signup = async (req, res) => {
-  console.log('hellooo',req.body)
+    // Check if user already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ error: "Email already in use" });
+    }
 
-  let userEmail = await userModel.findOne({email: req.body.email});
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-  if(userEmail) {
-      
-      res.status(400).send("User is already exist... please login!")
-      res.render("signup", {
-          err: "User is already exist... please login!"
-      })
-  } else {
-      
-      let hashPass = bcrypt.hashSync(req.body.password, 10);
+    // Create a new user
+    const user = new User({
+      username,
+      email,
+      password: hashedPassword,
+      role,
+    });
 
-      if(hashPass) {
-          
-          
-          let userData = {
-              ...req.body,
-              password: hashPass
-          }
-          
-          let newUser = new userModel(userData);
+    // Save the user to the database
+    await user.save();
 
-          newUser.save()
-              .then( () => {
-                  // res.redirect("/login");
-                  res.status(200).send("User is registered...") 
-              })
-              .catch( err => {
-                  console.log(err);
-              })
-      } else {
-          res.status(500).send("something went wrong... try again later please")
-          res.render("signup", {
-              err: "something went wrong... try again later please"
-          })
-      }
+    // Return success response
+    return res.status(201).json({ message: "User registered successfully" });
+  } catch (err) {
+    console.error(err); // Log the error for debugging
+    return res.status(500).json({ error: "Internal server error" });
   }
-}
-
-module.exports = {
-  renderSignup,
-  signup
-}
-
-
-
+};
