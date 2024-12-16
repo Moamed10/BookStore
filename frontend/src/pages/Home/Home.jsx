@@ -6,8 +6,6 @@ const Home = () => {
     <>
       <Banner />
       <TopSellers />
-=======
-  
     </>
   );
 };
