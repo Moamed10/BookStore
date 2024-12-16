@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const userRoute=require('./src/users/userRoute')
 require("./config/mongoose")
@@ -12,7 +13,7 @@ app.use(cors());
 
 app.use('/signup-user',userRoute)
 
-let port = 3100;
+const port = process.env.PORT || 3800;
 app.listen(port, () => {
   console.log(`app is on ${port}`);
 });

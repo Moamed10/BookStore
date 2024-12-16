@@ -1,9 +1,10 @@
-const mongoose=require('mongoose')
+const mongoose = require("mongoose");
 
-mongoose.connect('mongodb+srv://sce88:Zahra1200@bookstore2024.6ytze.mongodb.net/?retryWrites=true&w=majority&appName=bookstore2024')
-    .then( ()=>{
-        console.log('DB is connected')
-    })
-    .catch( err =>{
-        throw err
-    })
+mongoose
+  .connect(process.env.DB_LINK)
+  .then(() => {
+    console.log("DB is connected");
+  })
+  .catch((err) => {
+    console.error("Error connecting to DB:", err);
+  });
