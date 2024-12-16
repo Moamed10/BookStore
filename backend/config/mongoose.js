@@ -8,3 +8,4 @@ mongoose
   .catch((err) => {
     console.error("Error connecting to DB:", err);
   });
+//DB_LINK=mongodb+srv://endless-team:qv7eI8CZwxSqshHF@endless-library.60hzq.mongodb.net/?retryWrites=true&w=majority&appName=Endless-Library

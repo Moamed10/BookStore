@@ -14,16 +14,27 @@ const Signup = () => {
   const [message, setMessage] = useState("");
   const {
     register,
-    watch,
     formState: { errors },
   } = useForm();
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
 
-  //onsubmit
+  const handleChange = e =>{
+    console.log(e.target.value)
+    if(e.target.name === 'userName'){
+      setFormData(e.target.value);
+    }
+    else if(e.target.name === 'email'){
+      setFormData(e.target.value);
+    }
+    else if(e.target.name === 'password'){
+      setFormData(e.target.value);
+    }  
+    else if(e.target.name === 'role'){
+      setFormData(e.target.value);
+    } 
+  }
+
+
   const handleSubmit = async (e) => {
     e.preventDefault(); 
 
@@ -31,6 +42,7 @@ const Signup = () => {
     
       const response = await axios.post("http://localhost:3100/signup-user", formData);
       console.log('response from server',response.data)
+      // setFormData(response.data)
       
       setMessage(response.data.message);
     } catch (error) {
@@ -62,7 +74,7 @@ const Signup = () => {
               name="userName"
               type="text"
               placeholder="Your User Name"
-              value={formData.userName}
+              // value={formData.userName}
               onChange={handleChange}
               required
             />
@@ -86,7 +98,7 @@ const Signup = () => {
               name="email"
               type="email"
               placeholder="Email Address"
-              value={formData.email}
+              // value={formData.email}
               onChange={handleChange}
               required
             />
@@ -110,7 +122,7 @@ const Signup = () => {
               type="password"
               placeholder="Password"
               name="password"
-              value={formData.password}
+              // value={formData.password}
               onChange={handleChange}
               required
             />
@@ -132,7 +144,7 @@ const Signup = () => {
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="role"
               name="role"
-              value={formData.role}
+              // value={formData.role}
               onChange={handleChange}
             >
               <option value="">Select Role</option>
@@ -176,5 +188,6 @@ const Signup = () => {
     </div>
   );
 };
+
 
 export default Signup;
