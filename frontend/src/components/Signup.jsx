@@ -9,11 +9,11 @@ const Signup = () => {
     userName: "",
     email: "",
     password: "",
+    role:"buyer",
   });
   const [message, setMessage] = useState("");
   const {
     register,
-    handleSubmit,
     watch,
     formState: { errors },
   } = useForm();
@@ -23,13 +23,13 @@ const Signup = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const onSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault(); 
 
     try {
     
       const response = await axios.post("http://localhost:3100/signup-user", formData);
-
+      console.log('response from server',response.data)
       
       setMessage(response.data.message);
     } catch (error) {
@@ -46,7 +46,7 @@ const Signup = () => {
     <div className="h-[calc(100vh-120px)] flex justify-center items-center">
       <div className="w-full max-w-sm mx-auto bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
         <h2 className="text-xl font-semibold mb-4">Sign Up</h2>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label
               className="block text-gray-700 text-sm font-bold mb-2"
@@ -131,6 +131,8 @@ const Signup = () => {
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="role"
               name="role"
+              value={formData.role}
+              onChange={handleChange}
             >
               <option value="">Select Role</option>
               <option value="Buyer">Buyer </option>
@@ -170,7 +172,6 @@ const Signup = () => {
           &copy;2025 Endeless-Library. All rights reserved.
         </p>
       </div>
-      {message && <p></p>}
     </div>
   );
 };

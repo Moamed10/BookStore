@@ -3,11 +3,11 @@ const User = require('./userModel');
 
 
 const signupUser = async (req, res) => {
-  const { username, email, password } = req.body; 
+  const { username, email, password, role } = req.body; 
 
   try {
 
-    if (!username || !email || !password) {
+    if (!username || !email || !password || !role) {
       return res.status(400).json({ error: 'All fields are required' });
     }
 
@@ -25,6 +25,7 @@ const signupUser = async (req, res) => {
       username,
       email,
       password: hashedPassword,
+      role,
     });
 
     await newUser.save();

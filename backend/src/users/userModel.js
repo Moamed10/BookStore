@@ -19,6 +19,7 @@ const userSchema = new schema({
         type: String,
         enum: ["buyer", "seller "],
         default: "buyer",
+        required: true,
     },
     createAt: {
         type: Date,
