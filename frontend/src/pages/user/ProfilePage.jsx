@@ -16,7 +16,7 @@ const ProfilePage = () => {
     },
     role: "buyer",
     purchasedBooks: ["Book 1", "Book 2", "Book 3"],
-    soldBooks: ["Book A", "Book B"],
+    soldBooks: ["Book sold A", "Book sold B"],
     favoriteBooks: ["Book X", "Book Y", "Book Z"],
   });
 
