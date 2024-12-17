@@ -4,7 +4,7 @@ const path = require("path");
 // Configure multer storage
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "uploads/"); // Make sure 'uploads/' folder exists at the root of your project
+    cb(null, "uploads/"); // Ensure 'uploads/' folder exists at the root of your project
   },
   filename: (req, file, cb) => {
     // Set the filename for the uploaded file (add unique timestamp)
@@ -14,7 +14,7 @@ const storage = multer.diskStorage({
 
 const fileFilter = (req, file, cb) => {
   if (file.mimetype.startsWith("image/")) {
-    cb(null, true);
+    cb(null, true); // Accept only image files
   } else {
     cb(new Error("Only image files are allowed!"), false); // Reject non-image files
   }

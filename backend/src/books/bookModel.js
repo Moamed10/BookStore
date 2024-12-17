@@ -45,7 +45,7 @@ const bookSchema = new mongoose.Schema({
   likedByUsers: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: "User", // Reference to the User model (assuming there is a User model)
     },
   ],
 });

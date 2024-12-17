@@ -15,17 +15,17 @@ app.use(express.urlencoded({ extended: true }));
 // CORS setup
 app.use(
   cors({
-    origin: "http://localhost:5173", // Frontend URL
+    origin: "http://localhost:5173", // Frontend URL (update if needed)
     methods: ["GET", "POST", "PUT", "DELETE"],
   })
 );
 
 // Serve static files (uploaded images)
-app.use("/uploads", express.static("uploads"));
+app.use("/uploads", express.static("uploads")); // To serve uploaded images
 
 // Use routes
-app.use("/api/books", bookRoute); // Book-related routes
-app.use("/api/users", userRoutes); // User-related routes
+app.use(bookRoute); // Book-related routes
+app.use(userRoutes); // User-related routes
 
 // Set the port
 const port = process.env.PORT || 5000;

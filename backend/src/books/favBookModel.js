@@ -6,11 +6,6 @@ const favBookSchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
-  bookId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Book",
-    required: true,
-  },
 
   createdAt: {
     type: Date,

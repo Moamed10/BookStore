@@ -1,11 +1,13 @@
 const express = require("express");
 const upload = require("../../config/upload"); // Multer configuration
-const { postABook, getAllBooks } = require("./bookController"); // Controller that handles book creation
+const { postABook, getAllBooks } = require("./bookController"); // Controller methods
 
 const router = express.Router();
 
-// This is your POST route for creating a new book with an image
+// Route to create a new book with cover image
 router.post("/create-book", upload.single("coverImage"), postABook);
+
+// Route to get all books
 router.get("/all-books", getAllBooks);
 
 module.exports = router;

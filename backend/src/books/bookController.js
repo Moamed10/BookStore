@@ -1,4 +1,4 @@
-const Book = require("./bookModel");
+const Book = require("./bookModel"); // Your Mongoose Book model
 
 const postABook = async (req, res) => {
   try {
@@ -6,19 +6,25 @@ const postABook = async (req, res) => {
       return res.status(400).send({ message: "Cover image is required!" });
     }
 
-    // Sanitize category value to remove quotes, if any
-    const category = req.body.category.replace(/^"|"$/g, "").trim(); // trim to remove leading/trailing spaces
+    // Check if category exists and sanitize if necessary
+    let category = req.body.category;
+    if (category) {
+      category = category.replace(/^"|"$/g, "").trim(); // Remove quotes and trim spaces
+    } else {
+      return res.status(400).send({ message: "Category is required!" });
+    }
 
-    // Get the file path from the uploaded file
+    // Get the file path from Multer
     const coverImage = req.file.path;
 
-    // Create a new book object with the data from the request
+    // Create a new book object
     const newBook = new Book({
       ...req.body,
       category, // Ensure category is sanitized
       coverImage,
     });
 
+    // Save the book to the database
     await newBook.save();
 
     res.status(200).send({
@@ -42,63 +48,7 @@ const getAllBooks = async (req, res) => {
   }
 };
 
-// Get a single book
-const getSingleBook = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const book = await Book.findById(id);
-    if (!book) {
-      res.status(404).send({ message: "Book not found!" });
-    }
-    res.status(200).send(book);
-  } catch (error) {
-    console.error("Error fetching book", error);
-    res.status(500).send({ message: "Failed to fetch book" });
-  }
-};
-
-// Update book data
-const updateBook = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const updatedBook = await Book.findByIdAndUpdate(id, req.body, {
-      new: true,
-    });
-    if (!updatedBook) {
-      res.status(404).send({ message: "Book not found!" });
-    }
-    res.status(200).send({
-      message: "Book updated successfully",
-      book: updatedBook,
-    });
-  } catch (error) {
-    console.error("Error updating book", error);
-    res.status(500).send({ message: "Failed to update book" });
-  }
-};
-
-// Delete a book
-const deleteBook = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const deletedBook = await Book.findByIdAndDelete(id);
-    if (!deletedBook) {
-      res.status(404).send({ message: "Book not found!" });
-    }
-    res.status(200).send({
-      message: "Book deleted successfully",
-      book: deletedBook,
-    });
-  } catch (error) {
-    console.error("Error deleting book", error);
-    res.status(500).send({ message: "Failed to delete book" });
-  }
-};
-
 module.exports = {
   postABook,
   getAllBooks,
-  getSingleBook,
-  updateBook,
-  deleteBook,
 };
