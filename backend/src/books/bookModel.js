@@ -45,7 +45,7 @@ const bookSchema = new mongoose.Schema({
   authorId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
-    required: true,
+    required: false,
   },
   likedByUsers: [
     {
