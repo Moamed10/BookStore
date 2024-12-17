@@ -31,7 +31,7 @@ const Login = () => {
         formData
       );
       console.log(response);
-      console.log(response.data.token);
+      // console.log(response.data.token);
 
       // Store token in localStorage
       if (response.data.token) {
