@@ -42,14 +42,17 @@ const bookSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  authorId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
   likedByUsers: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User", // Reference to the User model (assuming there is a User model)
+      ref: "User",
     },
   ],
 });
 
-const Book = mongoose.model("Book", bookSchema);
-
-module.exports = Book;
+module.exports = mongoose.model("Book", bookSchema);
