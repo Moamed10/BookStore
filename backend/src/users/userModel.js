@@ -24,10 +24,12 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  favoriteBooks: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref:'Book'   
-  }]
+  favoriteBooks: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Book",
+    },
+  ],
 });
 
 module.exports = mongoose.model("User", userSchema);
