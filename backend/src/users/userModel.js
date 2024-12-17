@@ -30,6 +30,18 @@ const userSchema = new mongoose.Schema({
       ref: "Book",
     },
   ],
+  boughtBooks: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Book",
+    },
+  ],
+  soldBooks: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Book",
+    },
+  ],
 });
 
 module.exports = mongoose.model("User", userSchema);
