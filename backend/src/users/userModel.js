@@ -1,4 +1,11 @@
 const mongoose = require("mongoose");
+const categories = [
+  "choose category",
+  "Business",
+  "fiction",
+  "Horror",
+  "Adventure",
+];
 
 const userSchema = new mongoose.Schema({
   username: {
