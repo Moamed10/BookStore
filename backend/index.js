@@ -18,7 +18,6 @@ app.use(
 
 // Use the router file for user-related routes
 app.use(userRoutes);
-
 // Start server
 const port = process.env.PORT || 5000;
 app.listen(port, () => {
