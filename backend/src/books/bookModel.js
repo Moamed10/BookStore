@@ -1,5 +1,13 @@
 const mongoose = require("mongoose");
 
+const categories = [
+  "choose category", 
+  "Business",
+  "Fiction",
+  "Horror",
+  "Adventure",
+];
+
 const bookSchema = new mongoose.Schema(
   {
     title: {
@@ -13,7 +21,7 @@ const bookSchema = new mongoose.Schema(
     category: {
       type: String,
       required: true,
-      enum: categories, // Restrict category to the values in the categories array
+      enum: categories, 
     },
     trending: {
       type: Boolean,
@@ -48,7 +56,7 @@ const bookSchema = new mongoose.Schema(
     ],
   },
   {
-    timestamps: true,
+    timestamps: true, 
   }
 );
 

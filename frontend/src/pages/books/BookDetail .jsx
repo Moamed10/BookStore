@@ -7,35 +7,46 @@ import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 import { Pagination, Navigation } from "swiper/modules";
+import axios from "axios";
 
 const BookDetail = () => {
-  const { id } = useParams();
+  const { id } = useParams(); // Book ID from the URL
   const navigate = useNavigate();
 
   const [book, setBook] = useState(null);
   const [books, setBooks] = useState([]);
 
   useEffect(() => {
-    fetch("/Books.json")
-      .then((res) => res.json())
-      .then((data) => {
+    // Fetch all books from the backend using axios
+    axios
+      .get("http://localhost:5000/all-books")
+      .then((response) => {
+        const data = response.data;
         setBooks(data);
 
-        const selectedBook = data.find((b) => b._id === parseInt(id));
+        // Find the book with the matching ID
+        const selectedBook = data.find((b) => b._id === id);
         if (selectedBook) {
           setBook(selectedBook);
         } else {
-          navigate("/404");
+          navigate("/404"); // Navigate to a 404 page if the book is not found
         }
       })
-      .catch(() => navigate("/error"));
+      .catch(() => navigate("/error")); // Navigate to an error page in case of an API failure
   }, [id, navigate]);
 
-  const recommendedBooks = book
-    ? books.filter(
-        (b) => b.category.toLowerCase() === book.category.toLowerCase()
-      )
-    : [];
+  // Filter books in the same category for recommendations
+  const recommendedBooks =
+    book && books.length > 0
+      ? books.filter(
+          (b) =>
+            b.category &&
+            b.category.toLowerCase() === book.category.toLowerCase() &&
+            b._id !== book._id // Exclude the current book
+        )
+      : [];
+  console.log("Book:", book);
+  console.log("Recommended Books:", recommendedBooks);
 
   if (!book) {
     return <div>Loading...</div>;
@@ -48,7 +59,7 @@ const BookDetail = () => {
         {/* Book Image */}
         <div className="flex justify-start">
           <img
-            src={getImgUrl(book.coverImage) || "/path/to/default-image.jpg"}
+            src={getImgUrl(book.coverImage)} // Use the updated getImgUrl function
             alt={book.title}
             className="max-w-xs w-full h-auto rounded-lg shadow-lg"
           />
@@ -68,25 +79,29 @@ const BookDetail = () => {
       {/* Recommended Books Section */}
       <div className="mt-8">
         <h2 className="text-3xl font-semibold mb-4">Recommended Books</h2>
-        <Swiper
-          slidesPerView={1}
-          navigation
-          spaceBetween={20}
-          breakpoints={{
-            640: { slidesPerView: 1, spaceBetween: 20 },
-            768: { slidesPerView: 2, spaceBetween: 30 },
-            1024: { slidesPerView: 2, spaceBetween: 40 },
-            1180: { slidesPerView: 3, spaceBetween: 40 },
-          }}
-          modules={[Pagination, Navigation]}
-          className="mySwiper"
-        >
-          {recommendedBooks.map((book) => (
-            <SwiperSlide key={book._id}>
-              <BooksCard book={book} />
-            </SwiperSlide>
-          ))}
-        </Swiper>
+        {recommendedBooks.length > 0 ? (
+          <Swiper
+            slidesPerView={1}
+            navigation
+            spaceBetween={20}
+            breakpoints={{
+              640: { slidesPerView: 1, spaceBetween: 20 },
+              768: { slidesPerView: 2, spaceBetween: 30 },
+              1024: { slidesPerView: 2, spaceBetween: 40 },
+              1180: { slidesPerView: 3, spaceBetween: 40 },
+            }}
+            modules={[Pagination, Navigation]}
+            className="mySwiper"
+          >
+            {recommendedBooks.map((recommendedBook) => (
+              <SwiperSlide key={recommendedBook._id}>
+                <BooksCard book={recommendedBook} />
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        ) : (
+          <p className="text-gray-600">No recommended books available.</p>
+        )}
       </div>
     </div>
   );
