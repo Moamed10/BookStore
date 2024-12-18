@@ -5,7 +5,7 @@ import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 import { Pagination, Navigation } from "swiper/modules";
-
+import axios from "axios";
 const categories = [
   "choose category", // Optional placeholder
   "Business",
@@ -19,10 +19,9 @@ const TopSellers = () => {
   const [selectedCategory, setSelectedCategory] = useState("choose category");
 
   useEffect(() => {
-    // Fetch data from backend API
-    fetch("http://localhost:5000/all-books")
-      .then((res) => res.json())
-      .then((data) => setBooks(data))
+    axios
+      .get("http://localhost:5000/all-books")
+      .then((response) => setBooks(response.data))
       .catch((error) => console.error("Error fetching books:", error));
   }, []);
 

@@ -7,6 +7,7 @@ import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 import { Pagination, Navigation } from "swiper/modules";
+import axios from "axios";
 
 const BookDetail = () => {
   const { id } = useParams(); // Book ID from the URL
@@ -16,10 +17,11 @@ const BookDetail = () => {
   const [books, setBooks] = useState([]);
 
   useEffect(() => {
-    // Fetch all books from the backend
-    fetch("http://localhost:5000/all-books") // Replace with your API endpoint
-      .then((res) => res.json())
-      .then((data) => {
+    // Fetch all books from the backend using axios
+    axios
+      .get("http://localhost:5000/all-books")
+      .then((response) => {
+        const data = response.data;
         setBooks(data);
 
         // Find the book with the matching ID
