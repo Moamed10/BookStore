@@ -1,37 +1,50 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import avatrImg from "../assets/user.png";
 import logo from "../assets/logo2.png";
 import { FaCartShopping } from "react-icons/fa6";
+import { use } from "react";
 
 const navigation = [
-  { name: "all boooks", href: "/books" },
+  { name: "all books", href: "/books" },
   { name: "Cart Page", href: "/cart" },
-  { name: "log out", href: "/logout" },
+  { name: "Log Out", href: "/logout" },
 ];
 
 const Navbar = () => {
-  const currentuser = false; // Toggle this to false for testing non-logged-in state
+  const [currentUser, setCurrentUser] = useState(null);
   const [isDropdownOpen, setIsDropDownOpen] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const user = localStorage.getItem("user");
+    console.log(token);
+    console.log(user);
+    if (token && user) {
+      setCurrentUser(JSON.parse(user));
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    setCurrentUser(null);
+    navigate("/login");
+  };
 
   return (
     <div>
       <header className="bg-gray-900 text-white shadow-md">
         <nav className="max-w-screen-2xl mx-auto px-6 py-4 flex justify-between items-center">
-          {/* Left side: Logo */}
           <div className="flex items-center">
             <Link to="/">
-              <img
-                src={logo}
-                alt="Logo"
-                className="h-20 w-auto sm:h-24" // Adjust the height as needed for a larger logo
-              />
+              <img src={logo} alt="Logo" className="h-20 w-auto sm:h-24" />
             </Link>
           </div>
 
-          {/* Right side: User or Sign In Links */}
           <div className="flex items-center space-x-6 relative">
-            {currentuser ? (
+            {currentUser ? (
               <>
                 <button
                   onClick={() => setIsDropDownOpen(!isDropdownOpen)}
@@ -44,7 +57,6 @@ const Navbar = () => {
                   />
                 </button>
 
-                {/* Dropdown Menu */}
                 {isDropdownOpen && (
                   <div
                     className="absolute right-0 mt-2 w-48 bg-white text-black shadow-lg rounded-md z-40"
@@ -54,7 +66,13 @@ const Navbar = () => {
                       {navigation.map((item) => (
                         <li
                           key={item.name}
-                          onClick={() => setIsDropDownOpen(false)}
+                          onClick={() => {
+                            if (item.name === "Log Out") {
+                              handleLogout();
+                            } else {
+                              setIsDropDownOpen(false);
+                            }
+                          }}
                         >
                           <Link
                             to={item.href}
