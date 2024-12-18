@@ -16,7 +16,8 @@ const categories = [
   "Horror",
   "Adventure",
 ];
-
+const mo = fetch("Books.json");
+console.log(mo);
 const TopSellers = () => {
   const [books, setBooks] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("choose category");
@@ -34,7 +35,6 @@ const TopSellers = () => {
         );
 
   console.log(filterbooks);
-
   return (
     <div className="py-10">
       <h1 className="text-3xl font-semibold mb-6">Most Selling</h1>
