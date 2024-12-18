@@ -6,12 +6,27 @@ const postABook = async (req, res) => {
       return res.status(400).send({ message: "Cover image is required!" });
     }
 
-    // Check if category exists and sanitize if necessary
-    let category = req.body.category;
-    if (category) {
-      category = category.replace(/^"|"$/g, "").trim(); // Remove quotes and trim spaces
-    } else {
-      return res.status(400).send({ message: "Category is required!" });
+    // Ensure that we have all the necessary fields
+    const {
+      title,
+      description,
+      category,
+      trending,
+      oldPrice,
+      newPrice,
+      authorId,
+    } = req.body;
+
+    // Validate all required fields
+    if (
+      !title ||
+      !description ||
+      !category ||
+      !authorId ||
+      !oldPrice ||
+      !newPrice
+    ) {
+      return res.status(400).send({ message: "All fields are required!" });
     }
 
     // Get the file path from Multer
@@ -19,9 +34,14 @@ const postABook = async (req, res) => {
 
     // Create a new book object
     const newBook = new Book({
-      ...req.body,
-      category, // Ensure category is sanitized
+      title,
+      description,
+      category,
+      trending: trending === "on", // If it's a checkbox, "on" is sent for checked
+      oldPrice,
+      newPrice,
       coverImage,
+      authorId,
     });
 
     // Save the book to the database
@@ -37,7 +57,6 @@ const postABook = async (req, res) => {
   }
 };
 
-// Get all books
 const getAllBooks = async (req, res) => {
   try {
     const books = await Book.find().sort({ createdAt: -1 });

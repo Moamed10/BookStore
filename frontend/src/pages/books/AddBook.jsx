@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
+import axios from "axios"; // Import axios
 
 const categories = [
   "choose category",
@@ -16,7 +17,23 @@ const AddBook = () => {
     formState: { errors },
   } = useForm();
 
+  const [userId, setUserId] = useState(null);
+
+  // Get the user ID from the token in localStorage (or wherever you store it)
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      const decoded = JSON.parse(atob(token.split(".")[1])); // Decode the JWT token
+      setUserId(decoded.id); // Assuming token contains 'id' for the user
+    }
+  }, []);
+
   const onSubmit = async (data) => {
+    if (!userId) {
+      console.error("User not authenticated");
+      return;
+    }
+
     const formData = new FormData();
     formData.append("title", data.title);
     formData.append("description", data.description);
@@ -25,16 +42,25 @@ const AddBook = () => {
     formData.append("oldPrice", data.oldPrice);
     formData.append("newPrice", data.newPrice);
     formData.append("coverImage", data.coverImage[0]); // File upload
+    formData.append("authorId", userId); // Add the user ID to the form data
 
     try {
-      const response = await fetch("/api/books", {
-        method: "POST",
-        body: formData,
-      });
-      if (!response.ok) {
-        throw new Error("Failed to add book");
+      // Send the form data using axios to the backend URL
+      const response = await axios.post(
+        "http://localhost:5000/create-book", // Backend URL
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data", // Ensure the server knows it's multipart
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        console.log("Book added successfully");
+      } else {
+        console.error("Failed to add book");
       }
-      console.log("Book added successfully");
     } catch (error) {
       console.error("Error adding book:", error);
     }
@@ -45,6 +71,7 @@ const AddBook = () => {
       <div className="w-full max-w-lg mx-auto bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
         <h2 className="text-xl font-semibold mb-4">Add a New Book</h2>
         <form onSubmit={handleSubmit(onSubmit)}>
+          {/* Title Field */}
           <div className="mb-4">
             <label
               className="block text-gray-700 text-sm font-bold mb-2"
@@ -67,6 +94,7 @@ const AddBook = () => {
             )}
           </div>
 
+          {/* Description Field */}
           <div className="mb-4">
             <label
               className="block text-gray-700 text-sm font-bold mb-2"
@@ -90,6 +118,7 @@ const AddBook = () => {
             )}
           </div>
 
+          {/* Category Field */}
           <div className="mb-4">
             <label
               className="block text-gray-700 text-sm font-bold mb-2"
@@ -116,6 +145,7 @@ const AddBook = () => {
             )}
           </div>
 
+          {/* Trending Checkbox */}
           <div className="mb-4">
             <label
               className="block text-gray-700 text-sm font-bold mb-2"
@@ -133,6 +163,7 @@ const AddBook = () => {
             <span className="text-sm">Mark as trending</span>
           </div>
 
+          {/* Cover Image Field */}
           <div className="mb-4">
             <label
               className="block text-gray-700 text-sm font-bold mb-2"
@@ -157,6 +188,7 @@ const AddBook = () => {
             )}
           </div>
 
+          {/* Old Price Field */}
           <div className="mb-4">
             <label
               className="block text-gray-700 text-sm font-bold mb-2"
@@ -179,6 +211,7 @@ const AddBook = () => {
             )}
           </div>
 
+          {/* New Price Field */}
           <div className="mb-4">
             <label
               className="block text-gray-700 text-sm font-bold mb-2"
@@ -201,6 +234,7 @@ const AddBook = () => {
             )}
           </div>
 
+          {/* Submit Button */}
           <div className="flex items-center justify-between">
             <button
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
