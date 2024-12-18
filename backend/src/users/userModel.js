@@ -1,4 +1,11 @@
 const mongoose = require("mongoose");
+const categories = [
+  "choose category",
+  "Business",
+  "fiction",
+  "Horror",
+  "Adventure",
+];
 
 const userSchema = new mongoose.Schema({
   username: {
@@ -25,6 +32,18 @@ const userSchema = new mongoose.Schema({
     default: Date.now,
   },
   favoriteBooks: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Book",
+    },
+  ],
+  boughtBooks: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Book",
+    },
+  ],
+  soldBooks: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Book",
