@@ -8,9 +8,7 @@ const Home = () => {
     <>
       <Banner />
       <TopSellers />
-      <AllBooks/>
-=======
-  
+      {/* <AllBooks/> */}
     </>
   );
 };

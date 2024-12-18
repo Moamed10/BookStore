@@ -1,40 +1,41 @@
 import React, { useEffect, useState } from "react";
 import BooksCard from "../books/BooksCard";
 import { Swiper, SwiperSlide } from "swiper/react";
-
-// Import Swiper styles
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
-
 import { Pagination, Navigation } from "swiper/modules";
 
 const categories = [
-  "choose category",
+  "choose category", // Optional placeholder
   "Business",
-  "fiction",
+  "Fiction",
   "Horror",
   "Adventure",
 ];
-const mo = fetch("Books.json");
-console.log(mo);
+
 const TopSellers = () => {
   const [books, setBooks] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("choose category");
+
   useEffect(() => {
-    fetch("Books.json")
+    // Fetch data from backend API
+    fetch("http://localhost:5000/all-books")
       .then((res) => res.json())
-      .then((data) => setBooks(data));
+      .then((data) => setBooks(data))
+      .catch((error) => console.error("Error fetching books:", error));
   }, []);
 
-  const filterbooks =
+  // Filter books based on selected category
+  const filterBooks =
     selectedCategory === "choose category"
       ? books
       : books.filter(
-          (book) => book.category === selectedCategory.toLocaleLowerCase()
+          (book) =>
+            book.category &&
+            book.category.toLowerCase() === selectedCategory.toLowerCase()
         );
 
-  console.log(filterbooks);
   return (
     <div className="py-10">
       <h1 className="text-3xl font-semibold mb-6">Most Selling</h1>
@@ -78,8 +79,8 @@ const TopSellers = () => {
         modules={[Pagination, Navigation]}
         className="mySwiper"
       >
-        {filterbooks.length > 0 &&
-          filterbooks.map((book, index) => (
+        {filterBooks.length > 0 &&
+          filterBooks.map((book, index) => (
             <SwiperSlide key={index}>
               <BooksCard book={book} />
             </SwiperSlide>

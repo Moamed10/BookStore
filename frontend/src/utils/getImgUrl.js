@@ -1,5 +1,6 @@
-function getImgUrl(name) {
-  return new URL(`../assets/books/${name}`, import.meta.url);
+function getImgUrl(imagePath) {
+  const backendBaseUrl = "http://localhost:5000";
+  return `${backendBaseUrl}/${imagePath}`;
 }
 
 export default getImgUrl;
