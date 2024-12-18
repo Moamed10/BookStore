@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const categories = [
-  "choose category", // This could be an optional placeholder value
+  "choose category", 
   "Business",
   "Fiction",
   "Horror",
@@ -21,7 +21,7 @@ const bookSchema = new mongoose.Schema(
     category: {
       type: String,
       required: true,
-      enum: categories, // Restrict category to the values in the categories array
+      enum: categories, 
     },
     trending: {
       type: Boolean,
@@ -43,12 +43,21 @@ const bookSchema = new mongoose.Schema(
       type: Date,
       default: Date.now,
     },
+    authorId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    likedByUsers: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
   },
   {
-    timestamps: true,
+    timestamps: true, 
   }
 );
 
-const Book = mongoose.model("Book", bookSchema);
-
-module.exports = Book;
+module.exports = mongoose.model("Book", bookSchema);

@@ -6,6 +6,7 @@ import Home from "../pages/Home/Home";
 import Login from "../components/Login";
 import Signup from "../components/Signup";
 import ContactUs from "../pages/Home/ContactUs";
+import BookDetail from "../pages/books/BookDetail ";
 import AddBook from "../pages/books/AddBook";
 const router = createBrowserRouter([
   {
@@ -35,6 +36,10 @@ const router = createBrowserRouter([
       {
         path: "/contact",
         element: <ContactUs />,
+      },
+      {
+        path: "/books/:id",
+        element: <BookDetail />, // The BookDetail component will render for this route
       },
       {
         path: "/AddBook",

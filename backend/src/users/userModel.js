@@ -1,29 +1,54 @@
 const mongoose = require("mongoose");
-const schema = mongoose.Schema;
+const categories = [
+  "choose category",
+  "Business",
+  "fiction",
+  "Horror",
+  "Adventure",
+];
 
-const userSchema = new schema({
-    userName: {
-        type: String,
-        required: true,
+const userSchema = new mongoose.Schema({
+  username: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  password: {
+    type: String,
+    required: true,
+    minlength: 8,
+  },
+  role: {
+    type: String,
+    enum: ["buyer", "seller"],
+    default: "buyer",
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  favoriteBooks: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Book",
     },
-    email: {
-        type: String,
-        required: true,
+  ],
+  boughtBooks: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Book",
     },
-    password: {
-        type: String,
-        required: true,
-        minlength: 8,
+  ],
+  soldBooks: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Book",
     },
-    role: {
-        type: String,
-        enum: ["reader", "writer "],
-        default: "reader",
-    },
-    createAt: {
-        type: Date,
-        default: Date.now,
-    },
+  ],
 });
 
-module.exports = mongoose.model("user", userSchema);
+module.exports = mongoose.model("User", userSchema);
