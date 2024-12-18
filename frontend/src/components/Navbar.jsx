@@ -3,13 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import avatrImg from "../assets/user.png";
 import logo from "../assets/logo2.png";
 import { FaCartShopping } from "react-icons/fa6";
-import { use } from "react";
-
-const navigation = [
-  { name: "all books", href: "/books" },
-  { name: "Cart Page", href: "/cart" },
-  { name: "Log Out", href: "/logout" },
-];
 
 const Navbar = () => {
   const [currentUser, setCurrentUser] = useState(null);
@@ -19,8 +12,6 @@ const Navbar = () => {
   useEffect(() => {
     const token = localStorage.getItem("token");
     const user = localStorage.getItem("user");
-    console.log(token);
-    console.log(user);
     if (token && user) {
       setCurrentUser(JSON.parse(user));
     }
@@ -32,6 +23,15 @@ const Navbar = () => {
     setCurrentUser(null);
     navigate("/login");
   };
+
+  const navigation = [
+    { name: "all books", href: "/books" },
+    { name: "Cart Page", href: "/cart" },
+    ...(currentUser?.role === "seller"
+      ? [{ name: "Sell Book", href: "/Addbook" }]
+      : []),
+    { name: "Log Out", href: "/logout" },
+  ];
 
   return (
     <div>
@@ -85,15 +85,6 @@ const Navbar = () => {
                     </ul>
                   </div>
                 )}
-                <Link
-                  to="/cart"
-                  className="bg-blue-600 hover:bg-blue-700 text-white p-2 sm:px-6 px-4 rounded-sm flex items-center"
-                >
-                  <FaCartShopping className="text-xl" />
-                  <span className="text-sm font-secondary sm:ml-2 ml-1">
-                    Cart
-                  </span>
-                </Link>
               </>
             ) : (
               <div className="flex space-x-4">
@@ -110,6 +101,19 @@ const Navbar = () => {
                   Login
                 </Link>
               </div>
+            )}
+
+            {/* Cart link */}
+            {currentUser && (
+              <Link
+                to="/cart"
+                className="bg-blue-600 hover:bg-blue-700 text-white p-2 sm:px-6 px-4 rounded-sm flex items-center"
+              >
+                <FaCartShopping className="text-xl" />
+                <span className="text-sm font-secondary sm:ml-2 ml-1">
+                  Cart
+                </span>
+              </Link>
             )}
           </div>
         </nav>
