@@ -38,7 +38,7 @@ const Banner = () => {
             Whether you're into thrillers, romance, or fantasy, we’ve got
             something for everyone.
           </p>
-          <Link to="/books">
+          <Link to="/all-books">
             <button className="btn-primary">Explore All Books</button>
           </Link>
         </div>

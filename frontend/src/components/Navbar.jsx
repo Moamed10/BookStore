@@ -6,7 +6,7 @@ import { FaCartShopping } from "react-icons/fa6";
 import { use } from "react";
 
 const navigation = [
-  { name: "all books", href: "/books" },
+  { name: "all books", href: "/all-books" },
   { name: "Cart Page", href: "/cart" },
   { name: "Log Out", href: "/logout" },
 ];
@@ -56,11 +56,11 @@ const Navbar = () => {
                     className="h-8 w-8 rounded-full ring-2 ring-blue-500"
                   />
                 </button>
-                <Link
-                  to="/profile"
-                  className="text-sm font-medium font-primary hover:text-gray-300">
-                  Profile
-                </Link>
+
+                
+                <>
+   
+              </>
 
                 {isDropdownOpen && (
                   <div
@@ -92,14 +92,6 @@ const Navbar = () => {
                 )}
 
                 <>
-                {/* <li>
-                  <Link
-                   to="/profile"
-                  className="block px-4 py-2 text-sm hover:bg-gray-200 rounded">
-                   Profile
-                    </Link>
-                </li> */}
-
 
                 <Link
                   to="/cart"
@@ -111,6 +103,7 @@ const Navbar = () => {
                   </span>
                 </Link>
                 </>
+                
               </>
             ) : (
               <div className="flex space-x-4">

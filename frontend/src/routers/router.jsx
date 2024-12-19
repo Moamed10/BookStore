@@ -8,6 +8,7 @@ import Signup from "../components/Signup";
 import ContactUs from "../pages/Home/ContactUs";
 import ProfilePage from "../pages/user/ProfilePage";
 import BookDetail from "../pages/books/BookDetail ";
+import AllBooks from "../pages/books/AllBooks";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -40,6 +41,10 @@ const router = createBrowserRouter([
       {
         path: "/profile",
         element: <ProfilePage />,
+      },
+      {
+        path: "/all-books",
+        element: <AllBooks />,
       },
       {
         path: "/books/:id",
