@@ -6,7 +6,7 @@ import { FaCartShopping } from "react-icons/fa6";
 import { use } from "react";
 
 const navigation = [
-  { name: "all books", href: "/books" },
+  { name: "all books", href: "/all-books" },
   { name: "Cart Page", href: "/cart" },
   { name: "Log Out", href: "/logout" },
 ];
@@ -57,6 +57,11 @@ const Navbar = () => {
                   />
                 </button>
 
+                
+                <>
+   
+              </>
+
                 {isDropdownOpen && (
                   <div
                     className="absolute right-0 mt-2 w-48 bg-white text-black shadow-lg rounded-md z-40"
@@ -85,6 +90,9 @@ const Navbar = () => {
                     </ul>
                   </div>
                 )}
+
+                <>
+
                 <Link
                   to="/cart"
                   className="bg-blue-600 hover:bg-blue-700 text-white p-2 sm:px-6 px-4 rounded-sm flex items-center"
@@ -94,19 +102,19 @@ const Navbar = () => {
                     Cart
                   </span>
                 </Link>
+                </>
+                
               </>
             ) : (
               <div className="flex space-x-4">
                 <Link
                   to="/signup"
-                  className="text-sm font-medium font-primary hover:text-gray-300"
-                >
+                  className="text-sm font-medium font-primary hover:text-gray-300">
                   Sign Up
                 </Link>
                 <Link
                   to="/login"
-                  className="text-sm font-medium font-primary hover:text-gray-300"
-                >
+                  className="text-sm font-medium font-primary hover:text-gray-300">
                   Login
                 </Link>
               </div>
