@@ -56,6 +56,11 @@ const Navbar = () => {
                     className="h-8 w-8 rounded-full ring-2 ring-blue-500"
                   />
                 </button>
+                <Link
+                  to="/profile"
+                  className="text-sm font-medium font-primary hover:text-gray-300">
+                  Profile
+                </Link>
 
                 {isDropdownOpen && (
                   <div
@@ -85,6 +90,17 @@ const Navbar = () => {
                     </ul>
                   </div>
                 )}
+
+                <>
+                {/* <li>
+                  <Link
+                   to="/profile"
+                  className="block px-4 py-2 text-sm hover:bg-gray-200 rounded">
+                   Profile
+                    </Link>
+                </li> */}
+
+
                 <Link
                   to="/cart"
                   className="bg-blue-600 hover:bg-blue-700 text-white p-2 sm:px-6 px-4 rounded-sm flex items-center"
@@ -94,14 +110,10 @@ const Navbar = () => {
                     Cart
                   </span>
                 </Link>
+                </>
               </>
             ) : (
               <div className="flex space-x-4">
-                <Link
-                  to="/profile"
-                  className="text-sm font-medium font-primary hover:text-gray-300">
-                  Profile
-                </Link>
                 <Link
                   to="/signup"
                   className="text-sm font-medium font-primary hover:text-gray-300">
