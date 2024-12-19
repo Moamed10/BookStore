@@ -1,28 +1,53 @@
 import React from "react";
 import { FiShoppingCart } from "react-icons/fi";
 import getImgUrl from "../../utils/getImgUrl";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const BooksCard = ({ book }) => {
+  const navigate = useNavigate();
+
+  const handleAddToCart = () => {
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const existingBook = cart.find((item) => item._id === book._id);
+
+    if (existingBook) {
+      existingBook.quantity += 1; // Increment quantity if book already exists
+    } else {
+      cart.push({ ...book, quantity: 1 });
+    }
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+    console.log(`${book.title} added to cart`);
+  };
+
+  const handleNavigateToDetails = () => {
+    navigate(`/books/${book._id}`);
+  };
+
   return (
     <div>
       <div className="rounded-lg transition-shadow duration-300">
         <div className="flex flex-col sm:flex-row sm:items-center sm:h-72 sm:justify-center gap-4">
-          <div className="sm:h-72 sm:flex-shrink-0 border rounded-md">
-            <Link to={`/books/${book._id}`}>
-              <img
-                src={getImgUrl(book.coverImage)}
-                alt={book.title}
-                className="w-full bg-cover p-2 rounded-md cursor-pointer hover:scale-105 transition-all duration-200"
-              />
-            </Link>
+          {/* Book Cover Image (Navigates to Book Details) */}
+          <div
+            className="sm:h-72 sm:flex-shrink-0 border rounded-md cursor-pointer"
+            onClick={handleNavigateToDetails}
+          >
+            <img
+              src={getImgUrl(book.coverImage)}
+              alt={book.title}
+              className="w-full bg-cover p-2 rounded-md hover:scale-105 transition-all duration-200"
+            />
           </div>
+
+          {/* Book Details */}
           <div>
-            <Link to={`/books/${book._id}`}>
-              <h3 className="text-xl font-semibold hover:text-blue-600 mb-3">
-                {book.title}
-              </h3>
-            </Link>
+            <h3
+              className="text-xl font-semibold hover:text-blue-600 mb-3 cursor-pointer"
+              onClick={handleNavigateToDetails}
+            >
+              {book.title}
+            </h3>
             <p className="text-gray-600 mb-5">
               {book.description.length > 80
                 ? book.description.slice(0, 80) + "..."
@@ -34,7 +59,10 @@ const BooksCard = ({ book }) => {
                 ${book.oldPrice}
               </span>
             </p>
-            <button className="btn-primary px-6 space-x-1 flex items-center gap-1">
+            <button
+              className="btn-primary px-6 space-x-1 flex items-center gap-1"
+              onClick={handleAddToCart}
+            >
               <FiShoppingCart />
               <span>Add to Cart</span>
             </button>
