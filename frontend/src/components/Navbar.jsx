@@ -98,15 +98,18 @@ const Navbar = () => {
             ) : (
               <div className="flex space-x-4">
                 <Link
+                  to="/profile"
+                  className="text-sm font-medium font-primary hover:text-gray-300">
+                  Profile
+                </Link>
+                <Link
                   to="/signup"
-                  className="text-sm font-medium font-primary hover:text-gray-300"
-                >
+                  className="text-sm font-medium font-primary hover:text-gray-300">
                   Sign Up
                 </Link>
                 <Link
                   to="/login"
-                  className="text-sm font-medium font-primary hover:text-gray-300"
-                >
+                  className="text-sm font-medium font-primary hover:text-gray-300">
                   Login
                 </Link>
               </div>
