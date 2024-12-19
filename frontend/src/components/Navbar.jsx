@@ -5,7 +5,7 @@ import logo from "../assets/logo2.png";
 import { FaCartShopping } from "react-icons/fa6";
 
 const navigation = [
-  { name: "all boooks", href: "/books" },
+  { name: "all books", href: "/books" },
   { name: "Cart Page", href: "/cart" },
   { name: "log out", href: "/logout" },
 ];
@@ -80,16 +80,10 @@ const Navbar = () => {
             ) : (
               <div className="flex space-x-4">
                 <Link
-                  to="/signup"
+                  to="/profile"
                   className="text-sm font-medium font-primary hover:text-gray-300"
                 >
-                  Sign Up
-                </Link>
-                <Link
-                  to="/login"
-                  className="text-sm font-medium font-primary hover:text-gray-300"
-                >
-                  Login
+                  Profile
                 </Link>
               </div>
             )}
