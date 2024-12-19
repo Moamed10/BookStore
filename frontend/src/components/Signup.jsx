@@ -24,21 +24,21 @@ const Signup = () => {
           <div className="mb-4">
             <label
               className="block text-gray-700 text-sm font-bold mb-2"
-              htmlFor="name"
+              htmlFor="userName"
             >
-              Name
+              User Name
             </label>
             <input
-              {...register("name", { required: "Name is required" })}
+              {...register("userName", { required: "User Name is required" })}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="name"
-              name="name"
+              id="userName"
+              name="userName"
               type="text"
-              placeholder="Your Name"
+              placeholder="Your User Name"
             />
-            {errors.name && (
+            {errors.userName && (
               <p className="text-red-500 text-xs italic">
-                {errors.name.message}
+                {errors.userName.message}
               </p>
             )}
           </div>
@@ -98,8 +98,8 @@ const Signup = () => {
               name="role"
             >
               <option value="">Select Role</option>
-              <option value="Buyer">Buyer</option>
-              <option value="Seller">Seller</option>
+              <option value="Buyer">Writer </option>
+              <option value="Seller">Reader </option>
             </select>
             {errors.role && (
               <p className="text-red-500 text-xs italic">
