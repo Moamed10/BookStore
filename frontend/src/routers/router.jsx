@@ -8,6 +8,7 @@ import Signup from "../components/Signup";
 import ContactUs from "../pages/Home/ContactUs";
 import ProfilePage from "../pages/user/ProfilePage";
 import BookDetail from "../pages/books/BookDetail ";
+import AddBook from "../pages/books/AddBook";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -44,6 +45,10 @@ const router = createBrowserRouter([
       {
         path: "/books/:id",
         element: <BookDetail />, // The BookDetail component will render for this route
+      },
+      {
+        path: "/AddBook",
+        element: <AddBook />,
       },
     ],
   },
