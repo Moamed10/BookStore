@@ -4,6 +4,13 @@ import avatrImg from "../assets/user.png";
 import logo from "../assets/logo2.png";
 import { FaCartShopping } from "react-icons/fa6";
 
+const navigation = [
+  { name: "all books", href: "/books" },
+  { name: "Cart Page", href: "/cart" },
+  { name: "profile", href: "/profile" },
+  { name: "Log Out", href: "/logout" },
+];
+
 const Navbar = () => {
   const [currentUser, setCurrentUser] = useState(null);
   const [isDropdownOpen, setIsDropDownOpen] = useState(false);
