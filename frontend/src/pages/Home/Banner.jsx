@@ -1,30 +1,18 @@
 import React, { useState } from "react";
-import { FaSearch } from "react-icons/fa"; // Import the FaSearch icon
 import "../../App.css"; // Correct path (avoid absolute paths if possible)
 import booksImage from "../../assets/img1.png"; // Correct relative path
 import { Link } from "react-router-dom";
+import  Search  from "../../components/Search";
+
 console.log(booksImage);
 
 const Banner = () => {
-  const [searchQuery, setSearchQuery] = useState("");
-
-  const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value);
-  };
+// const [results,setResults] =useState([])
 
   return (
     <div className="flex flex-col py-6 md:py-10 justify-center items-center gap-6 md:gap-8">
       {/* Search Bar Section */}
-      <div className="w-full max-w-sm mb-4 relative">
-        <input
-          type="text"
-          placeholder="Find Your Next Favorite Book"
-          value={searchQuery}
-          onChange={handleSearchChange}
-          className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-      </div>
+      <Search/>
 
       {/* Content Section (Text on the left, Image on the right) */}
       <div className="flex flex-col md:flex-row items-center justify-between w-full max-w-7xl px-4">
