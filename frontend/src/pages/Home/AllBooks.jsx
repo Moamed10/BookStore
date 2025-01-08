@@ -2,24 +2,48 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import getImgUrl from "../../utils/getImgUrl"; // Import getImgUrl
 import { Link } from "react-router-dom"; // Import Link for navigation
+import Search from "../../components/Search";
+import { useSearchParams } from "react-router-dom";
 
 export default function AllBooks() {
   const [books, setBooks] = useState([]);
+  const [searchParams] = useSearchParams();
 
   useEffect(() => {
-    axios
-      .get("http://localhost:5000/all-books")
+    const query = searchParams.get('q');
+
+    // Get all books 
+    axios.get("http://localhost:5000/all-books")
       .then((result) => {
-        setBooks(result.data);
+        let booksData = result.data;
+
+        if(!query || query === "") {
+          // Set All Books
+          setBooks(booksData);
+        } else {
+          // Filter books by search query
+          let filteredBooks = booksData.filter( book => {
+            console.log(1, book.title.toLowerCase())
+            console.log(2, query.toLowerCase());
+            return book.title.toLowerCase().includes(query.toLowerCase())
+          });
+          console.log(filteredBooks)
+          setBooks(filteredBooks);
+        }
+
       })
       .catch((err) => {
         console.log(err);
       });
+
   }, []);
 
   return (
     <div className="min-h-screen bg-gray-100 p-8">
-      <h1 className="text-3xl font-bold text-center mb-8">All Books</h1>
+      <div className="books-title-search">
+        <h1 className="text-3xl font-bold text-center mb-8">All Books</h1>
+        <Search />
+      </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
         {books &&
           books.map((book) => (
