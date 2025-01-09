@@ -3,23 +3,42 @@ import axios from "axios";
 import getImgUrl from "../../utils/getImgUrl";
 import { FiShoppingCart } from "react-icons/fi";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { Link } from "react-router-dom"; // Import Link for navigation
+import Search from "../../components/Search";
+import { useSearchParams } from "react-router-dom";
 
 export default function AllBooks() {
   const [books, setBooks] = useState([]);
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [addedBook, setAddedBook] = useState(null);
-  const navigate = useNavigate(); // Initialize navigate function
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   // Load books data
   useEffect(() => {
-    axios
-      .get("http://localhost:5000/all-books")
+    const query = searchParams.get('q');
+
+    // Get all books 
+    axios.get("http://localhost:5000/all-books")
       .then((result) => {
-        setBooks(result.data);
+        let booksData = result.data;
+
+        if(!query || query === "") {
+          // Set All Books
+          setBooks(booksData);
+        } else {
+          // Filter books by search query
+          let filteredBooks = booksData.filter( book => {
+            return book.title.toLowerCase().includes(query.toLowerCase())
+          });
+          setBooks(filteredBooks);
+        }
+
       })
       .catch((err) => {
         console.log(err);
       });
+
   }, []);
 
   // Add book to the cart
@@ -59,7 +78,10 @@ export default function AllBooks() {
           {addedBook.title} added to cart!
         </div>
       )}
-      <h1 className="text-3xl font-bold text-center mb-8">All Books</h1>
+      <div className="books-title-search">
+        <h1 className="text-3xl font-bold text-center mb-8">All Books</h1>
+        <Search />
+      </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
         {books &&
           books.map((book) => (
