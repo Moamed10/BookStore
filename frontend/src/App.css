@@ -38,3 +38,32 @@
 .html {
   scroll-behavior: smooth;
 }
+
+.search-box {
+  display: flex;
+  gap: 10px;
+}
+
+.search-box button {
+  width: 50%;
+  padding: revert;
+  height: 40px; 
+}
+
+.books-title-search {
+  display: flex;
+  justify-content: space-between;
+}
+
+.clear-btn {
+  background: red;
+  color: white;
+  font-weight: 900;
+  font-size: 16px;
+  padding: 15px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 40px;
+}
