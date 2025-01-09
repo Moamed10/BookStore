@@ -23,11 +23,8 @@ export default function AllBooks() {
         } else {
           // Filter books by search query
           let filteredBooks = booksData.filter( book => {
-            console.log(1, book.title.toLowerCase())
-            console.log(2, query.toLowerCase());
             return book.title.toLowerCase().includes(query.toLowerCase())
           });
-          console.log(filteredBooks)
           setBooks(filteredBooks);
         }
 
