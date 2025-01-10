@@ -117,16 +117,17 @@ const Navbar = () => {
             </div>
           )}
 
-          {/* Cart link */}
-          <Link
-            to="/cart"
-            className="bg-blue-600 hover:bg-blue-700 text-white p-2 sm:px-6 px-4 rounded-sm flex items-center"
-          >
-            <FaCartShopping className="text-xl" />
-            <span className="text-sm font-secondary sm:ml-2 ml-1">
-              Cart ({cartCount}) {/* Show cart count */}
-            </span>
-          </Link>
+          {currentUser && (
+            <Link
+              to="/cart"
+              className="bg-blue-600 hover:bg-blue-700 text-white p-2 sm:px-6 px-4 rounded-sm flex items-center"
+            >
+              <FaCartShopping className="text-xl" />
+              <span className="text-sm font-secondary sm:ml-2 ml-1">
+                Cart ({cartCount}) {/* Show cart count */}
+              </span>
+            </Link>
+          )}
         </div>
       </nav>
     </header>
