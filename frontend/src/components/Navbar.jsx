@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import avatrImg from "../assets/user.png";
 import logo from "../assets/logo2.png";
 import { FaCartShopping } from "react-icons/fa6";
+import { FaBookMedical } from "react-icons/fa";
 
 const Navbar = () => {
   const [currentUser, setCurrentUser] = useState(null);
@@ -15,7 +16,7 @@ const Navbar = () => {
     const token = localStorage.getItem("token");
     const user = localStorage.getItem("user");
     if (token && user) {
-      setCurrentUser(JSON.parse(user)); // Set logged in user
+      setCurrentUser(JSON.parse(user)); // Set logged-in user
     }
 
     // Fetch cart data from localStorage
@@ -32,11 +33,9 @@ const Navbar = () => {
   };
 
   const navigation = [
-    { name: "all books", href: "/books" },
+    { name: "All Books", href: "/books" },
     { name: "Cart Page", href: "/cart" },
-    ...(currentUser?.role === "seller"
-      ? [{ name: "Log Out", href: "/logout" }]
-      : []),
+    ...(currentUser ? [{ name: "Log Out", href: "#" }] : []),
   ];
 
   return (
@@ -51,12 +50,12 @@ const Navbar = () => {
         <div className="flex items-center space-x-6 relative">
           {currentUser ? (
             <>
-              {/* Seller Link: "Sell Book" directly in navbar if user is seller */}
-              {currentUser.role === "seller" && (
+              {currentUser && currentUser.role === "seller" && (
                 <Link
                   to="/Addbook"
-                  className="text-sm font-medium font-primary hover:text-gray-300"
+                  className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 px-4 rounded shadow transition duration-300"
                 >
+                  <FaBookMedical className="mr-2" />
                   Sell Book
                 </Link>
               )}
