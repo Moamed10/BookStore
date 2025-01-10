@@ -1,6 +1,5 @@
 import React from "react";
-import ReactDOM from "react-dom/client";
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import App from "../App";
 import Home from "../pages/Home/Home";
 import Login from "../components/Login";
@@ -11,55 +10,65 @@ import BookDetail from "../pages/books/BookDetail ";
 import Cart from "../pages/Home/Cart";
 import AddBook from "../pages/books/AddBook";
 import AllBooks from "../pages/Home/AllBooks";
+import ProtectedRoute from "./ProtectedRoute "; // This can be used for specific role-based protections
+
+// Function to check if the user is logged in (i.e., token is available in localStorage)
+const isLoggedIn = () => {
+  return !!localStorage.getItem("token");
+};
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App></App>,
+    element: <App />,
     children: [
-      {
-        path: "/",
-        element: <Home />,
-      },
-      {
-        path: "/orders",
-        element: <div> orders</div>,
-      },
-      {
-        path: "/about",
-        element: <div> about </div>,
-      },
+      { path: "/", element: <Home /> },
+      { path: "/orders", element: <div>orders</div> },
+      { path: "/about", element: <div>about</div> },
+      { path: "/contact", element: <ContactUs /> },
+      { path: "/books/:id", element: <BookDetail /> },
+      { path: "/books", element: <AllBooks /> },
+
+      // Login Route: If already logged in, redirect to home
       {
         path: "/login",
-        element: <Login />,
+        element: isLoggedIn() ? <Navigate to="/" replace /> : <Login />,
       },
+
+      // Signup Route: If already logged in, redirect to home
       {
         path: "/signup",
-        element: <Signup />,
+        element: isLoggedIn() ? <Navigate to="/" replace /> : <Signup />,
       },
-      {
-        path: "/contact",
-        element: <ContactUs />,
-      },
+
+      // Profile Route: Only accessible by logged-in users
       {
         path: "/profile",
-        element: <ProfilePage />,
+        element: isLoggedIn() ? (
+          <ProfilePage />
+        ) : (
+          <Navigate to="/login" replace />
+        ),
       },
+
+      // Cart Route: Protected route (only accessible if the user is logged in)
       {
-        path: "/books/:id",
-        element: <BookDetail />, // The BookDetail component will render for this route
+        path: "/cart",
+        element: (
+          <ProtectedRoute>
+            <Cart />
+          </ProtectedRoute>
+        ),
       },
-      {
-        path: "/Cart",
-        element: <Cart />,
-      },
+
+      // Protected AddBook route (only accessible by sellers)
       {
         path: "/AddBook",
-        element: <AddBook />,
-      },
-      {
-        path: "/books",
-        element: <AllBooks />,
+        element: (
+          <ProtectedRoute roleRequired="seller">
+            <AddBook />
+          </ProtectedRoute>
+        ),
       },
     ],
   },
