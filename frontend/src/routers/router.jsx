@@ -11,7 +11,7 @@ import BookDetail from "../pages/books/BookDetail ";
 import Cart from "../pages/Home/Cart";
 import AddBook from "../pages/books/AddBook";
 import AllBooks from "../pages/Home/AllBooks";
-
+import Mybooks from "../pages/books/Mybooks";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -60,6 +60,10 @@ const router = createBrowserRouter([
       {
         path: "/books",
         element: <AllBooks />,
+      },
+      {
+        path: "/mybooks",
+        element: <Mybooks />,
       },
     ],
   },
