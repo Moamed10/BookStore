@@ -6,13 +6,13 @@ import Login from "../components/Login";
 import Signup from "../components/Signup";
 import ContactUs from "../pages/Home/ContactUs";
 import ProfilePage from "../pages/user/ProfilePage";
-import BookDetail from "../pages/books/BookDetail";
+import BookDetail from "../pages/books/BookDetail ";
 import Cart from "../pages/Home/Cart";
 import AddBook from "../pages/books/AddBook";
 import AllBooks from "../pages/Home/AllBooks";
 import Mybooks from "../pages/books/Mybooks";
 import PaymentPage from "../pages/Home/PaymentPage";
-import ProtectedRoute from "./ProtectedRoute";
+import ProtectedRoute from "./ProtectedRoute ";
 
 const isLoggedIn = () => {
   return !!localStorage.getItem("token");
