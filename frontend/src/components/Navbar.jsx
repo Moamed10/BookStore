@@ -35,6 +35,7 @@ const Navbar = () => {
   const navigation = [
     { name: "All Books", href: "/books" },
     { name: "Cart Page", href: "/cart" },
+    { name: "Profile", href: "/profile" },
     ...(currentUser ? [{ name: "Log Out", href: "#" }] : []),
   ];
 
