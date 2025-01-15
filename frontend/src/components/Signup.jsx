@@ -2,8 +2,11 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { FaGoogle } from "react-icons/fa";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Signup = () => {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -31,6 +34,10 @@ const Signup = () => {
         formData
       );
       setMessage(response.data.message);
+      console.log(response.data.message);
+      if (response.data.message == "User registered successfully") {
+        navigate("/login");
+      }
     } catch (error) {
       setMessage(error.response?.data?.error || "An error occurred");
     } finally {

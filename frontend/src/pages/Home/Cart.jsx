@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import getImgUrl from "../../utils/getImgUrl";
 
 const CartItem = ({ title, price, category, imageUrl, quantity, onRemove }) => {
@@ -39,27 +39,56 @@ const CartItem = ({ title, price, category, imageUrl, quantity, onRemove }) => {
 
 const Cart = () => {
   const [cart, setCart] = useState([]);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
     setCart(storedCart);
+
+    // Check if the user is logged in
+    const token = localStorage.getItem("token");
+    if (token) {
+      setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
+    }
   }, []);
 
   const handleRemove = (id) => {
     const updatedCart = cart.filter((item) => item._id !== id);
     setCart(updatedCart);
     localStorage.setItem("cart", JSON.stringify(updatedCart));
+
+    // Refresh the page to reflect changes
+    window.location.reload(); // Reloads the page after removing an item
   };
 
   const handleClearCart = () => {
     setCart([]);
     localStorage.removeItem("cart");
+
+    // Refresh the page to reflect the empty cart
+    window.location.reload(); // Reloads the page after clearing the cart
   };
 
+  // Calculate the subtotal (total before VAT)
   const subtotal = cart.reduce(
     (acc, item) => acc + item.newPrice * item.quantity,
     0
   );
+
+  const handleProceedToCheckout = () => {
+    if (!isLoggedIn) {
+      // Redirect to login page if not logged in
+      navigate("/login");
+    } else {
+      // Pass the subtotal to the payment page (no VAT yet)
+      navigate("/checkout", {
+        state: { subtotal },
+      });
+    }
+  };
 
   return (
     <div className="flex flex-col mt-12 bg-white shadow-lg rounded-lg max-w-4xl mx-auto">
@@ -99,12 +128,12 @@ const Cart = () => {
           Shipping and taxes calculated at checkout.
         </p>
         <div className="mt-6 flex justify-center">
-          <Link
-            to="/checkout"
+          <button
+            onClick={handleProceedToCheckout}
             className="flex items-center justify-center rounded-lg bg-indigo-600 text-white font-medium px-8 py-3 shadow-md hover:bg-indigo-700 transition-all duration-200"
           >
             Proceed to Checkout
-          </Link>
+          </button>
         </div>
         <div className="mt-4 text-center text-sm text-gray-500">
           <Link to="/">
