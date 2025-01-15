@@ -1,13 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import getImgUrl from "../../utils/getImgUrl";
-import BooksCard from "../books/BooksCard";
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/css";
-import "swiper/css/pagination";
-import "swiper/css/navigation";
-import { Pagination, Navigation } from "swiper/modules";
 import axios from "axios";
+import { FiShoppingCart } from "react-icons/fi";
 
 const BookDetail = () => {
   const { id } = useParams();
@@ -16,22 +11,25 @@ const BookDetail = () => {
   const [book, setBook] = useState(null);
   const [books, setBooks] = useState([]);
   const [isPopupVisible, setIsPopupVisible] = useState(false);
+  const [addedBook, setAddedBook] = useState(null);
 
   useEffect(() => {
+    // Load all books data
     axios
       .get("http://localhost:5000/all-books")
-      .then((response) => {
-        const data = response.data;
-        setBooks(data);
-
-        const selectedBook = data.find((b) => b._id === id);
+      .then((result) => {
+        setBooks(result.data);
+        const selectedBook = result.data.find((b) => b._id === id);
         if (selectedBook) {
           setBook(selectedBook);
         } else {
-          navigate("/404");
+          navigate("/404"); // If book is not found, redirect to 404 page
         }
       })
-      .catch(() => navigate("/error"));
+      .catch((err) => {
+        console.log(err);
+        navigate("/error"); // Redirect to error page in case of failure
+      });
   }, [id, navigate]);
 
   const handleAddToCart = () => {
@@ -45,10 +43,15 @@ const BookDetail = () => {
     }
 
     localStorage.setItem("cart", JSON.stringify(cart));
+
+    // Set state for showing popup
+    setAddedBook(book);
     setIsPopupVisible(true);
 
+    // Refresh the page after adding a book to the cart using window.location.reload
     setTimeout(() => {
       setIsPopupVisible(false);
+      window.location.reload(false); // Refreshes the page
     }, 2000); // Popup disappears after 2 seconds
   };
 
@@ -69,12 +72,13 @@ const BookDetail = () => {
   return (
     <div className="container mx-auto py-12">
       {/* Pop-Up Notification */}
-      {isPopupVisible && (
+      {isPopupVisible && addedBook && (
         <div className="fixed top-5 right-5 bg-green-600 text-white px-4 py-2 rounded shadow-lg transition-opacity duration-300">
-          {book.title} added to cart!
+          {addedBook.title} added to cart!
         </div>
       )}
 
+      {/* Book Detail Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
         <div className="flex justify-start">
           <img
@@ -95,28 +99,46 @@ const BookDetail = () => {
           </button>
         </div>
       </div>
+
+      {/* Recommended Books */}
       <div className="mt-8">
         <h2 className="text-3xl font-semibold mb-4">Recommended Books</h2>
         {recommendedBooks.length > 0 ? (
-          <Swiper
-            slidesPerView={1}
-            navigation
-            spaceBetween={20}
-            breakpoints={{
-              640: { slidesPerView: 1, spaceBetween: 20 },
-              768: { slidesPerView: 2, spaceBetween: 30 },
-              1024: { slidesPerView: 2, spaceBetween: 40 },
-              1180: { slidesPerView: 3, spaceBetween: 40 },
-            }}
-            modules={[Pagination, Navigation]}
-            className="mySwiper"
-          >
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             {recommendedBooks.map((recommendedBook) => (
-              <SwiperSlide key={recommendedBook._id}>
-                <BooksCard book={recommendedBook} />
-              </SwiperSlide>
+              <div
+                key={recommendedBook._id}
+                className="bg-white shadow-md rounded-lg overflow-hidden hover:scale-105 transition-transform duration-300"
+              >
+                <img
+                  src={getImgUrl(recommendedBook.coverImage)}
+                  alt={recommendedBook.title}
+                  className="w-full h-56 object-cover object-center"
+                />
+                <div className="p-4">
+                  <h2 className="text-lg font-semibold mb-2">
+                    {recommendedBook.title}
+                  </h2>
+                  <p className="text-gray-600 text-sm mb-2">
+                    {recommendedBook.description}
+                  </p>
+                  <p className="text-red-600 line-through font-bold">
+                    ${recommendedBook.oldPrice}
+                  </p>
+                  <p className="text-red-600 font-bold">
+                    ${recommendedBook.newPrice}
+                  </p>
+                  <button
+                    className="btn-primary px-6 space-x-1 flex items-center gap-1"
+                    onClick={() => handleAddToCart(recommendedBook)}
+                  >
+                    <FiShoppingCart />
+                    <span>Add to Cart</span>
+                  </button>
+                </div>
+              </div>
             ))}
-          </Swiper>
+          </div>
         ) : (
           <p className="text-gray-600">No recommended books available.</p>
         )}

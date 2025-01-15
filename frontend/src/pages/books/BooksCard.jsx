@@ -3,22 +3,8 @@ import { FiShoppingCart } from "react-icons/fi";
 import getImgUrl from "../../utils/getImgUrl";
 import { useNavigate } from "react-router-dom";
 
-const BooksCard = ({ book }) => {
+const BooksCard = ({ book, onAddToCart }) => {
   const navigate = useNavigate();
-
-  const handleAddToCart = () => {
-    const cart = JSON.parse(localStorage.getItem("cart")) || [];
-    const existingBook = cart.find((item) => item._id === book._id);
-
-    if (existingBook) {
-      existingBook.quantity += 1; // Increment quantity if book already exists
-    } else {
-      cart.push({ ...book, quantity: 1 });
-    }
-
-    localStorage.setItem("cart", JSON.stringify(cart));
-    console.log(`${book.title} added to cart`);
-  };
 
   const handleNavigateToDetails = () => {
     navigate(`/books/${book._id}`);
@@ -61,7 +47,7 @@ const BooksCard = ({ book }) => {
             </p>
             <button
               className="btn-primary px-6 space-x-1 flex items-center gap-1"
-              onClick={handleAddToCart}
+              onClick={() => onAddToCart(book)} // Trigger the add to cart handler passed as a prop
             >
               <FiShoppingCart />
               <span>Add to Cart</span>
