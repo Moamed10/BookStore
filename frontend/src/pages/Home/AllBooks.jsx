@@ -16,29 +16,28 @@ export default function AllBooks() {
 
   // Load books data
   useEffect(() => {
-    const query = searchParams.get('q');
+    const query = searchParams.get("q");
 
-    // Get all books 
-    axios.get("http://localhost:5000/all-books")
+    // Get all books
+    axios
+      .get("http://localhost:5000/all-books")
       .then((result) => {
         let booksData = result.data;
 
-        if(!query || query === "") {
+        if (!query || query === "") {
           // Set All Books
           setBooks(booksData);
         } else {
           // Filter books by search query
-          let filteredBooks = booksData.filter( book => {
-            return book.title.toLowerCase().includes(query.toLowerCase())
+          let filteredBooks = booksData.filter((book) => {
+            return book.title.toLowerCase().includes(query.toLowerCase());
           });
           setBooks(filteredBooks);
         }
-
       })
       .catch((err) => {
         console.log(err);
       });
-
   }, []);
 
   // Add book to the cart
