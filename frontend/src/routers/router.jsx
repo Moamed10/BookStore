@@ -66,6 +66,7 @@ const router = createBrowserRouter([
         path: "/mybooks",
         element: <Mybooks />,
       },
+      {
         path: "/checkout",
         element: <PaymentPage />,
       },
