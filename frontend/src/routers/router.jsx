@@ -13,6 +13,7 @@ import AllBooks from "../pages/Home/AllBooks";
 import Mybooks from "../pages/books/Mybooks";
 import PaymentPage from "../pages/Home/PaymentPage";
 import ProtectedRoute from "./ProtectedRoute ";
+import EditBook from "../pages/books/EditBook";
 
 const isLoggedIn = () => {
   return !!localStorage.getItem("token");
@@ -68,6 +69,10 @@ const router = createBrowserRouter([
       {
         path: "/checkout",
         element: <PaymentPage />,
+      },
+      {
+        path: "/edit-book/:id",
+        element: <EditBook />,
       },
     ],
   },
