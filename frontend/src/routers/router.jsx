@@ -1,6 +1,5 @@
 import React from "react";
-import ReactDOM from "react-dom/client";
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import App from "../App";
 import Home from "../pages/Home/Home";
 import Login from "../components/Login";
@@ -13,54 +12,54 @@ import AddBook from "../pages/books/AddBook";
 import AllBooks from "../pages/Home/AllBooks";
 import Mybooks from "../pages/books/Mybooks";
 import PaymentPage from "../pages/Home/PaymentPage";
+import ProtectedRoute from "./ProtectedRoute ";
+
+const isLoggedIn = () => {
+  return !!localStorage.getItem("token");
+};
+
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App></App>,
+    element: <App />,
     children: [
-      {
-        path: "/",
-        element: <Home />,
-      },
-      {
-        path: "/orders",
-        element: <div> orders</div>,
-      },
-      {
-        path: "/about",
-        element: <div> about </div>,
-      },
+      { path: "/", element: <Home /> },
+      { path: "/orders", element: <div>orders</div> },
+      { path: "/about", element: <div>about</div> },
+      { path: "/contact", element: <ContactUs /> },
+      { path: "/books/:id", element: <BookDetail /> },
+      { path: "/books", element: <AllBooks /> },
       {
         path: "/login",
-        element: <Login />,
+        element: isLoggedIn() ? <Navigate to="/" replace /> : <Login />,
       },
       {
         path: "/signup",
-        element: <Signup />,
-      },
-      {
-        path: "/contact",
-        element: <ContactUs />,
+        element: isLoggedIn() ? <Navigate to="/" replace /> : <Signup />,
       },
       {
         path: "/profile",
-        element: <ProfilePage />,
+        element: isLoggedIn() ? (
+          <ProfilePage />
+        ) : (
+          <Navigate to="/login" replace />
+        ),
       },
       {
-        path: "/books/:id",
-        element: <BookDetail />, // The BookDetail component will render for this route
-      },
-      {
-        path: "/Cart",
-        element: <Cart />,
+        path: "/cart",
+        element: (
+          <ProtectedRoute>
+            <Cart />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/AddBook",
-        element: <AddBook />,
-      },
-      {
-        path: "/books",
-        element: <AllBooks />,
+        element: (
+          <ProtectedRoute roleRequired="seller">
+            <AddBook />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/mybooks",

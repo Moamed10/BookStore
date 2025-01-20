@@ -30,6 +30,7 @@ const Navbar = () => {
     localStorage.removeItem("user");
     setCurrentUser(null);
     navigate("/login");
+    window.location.reload();
   };
 
   const navigation = [
