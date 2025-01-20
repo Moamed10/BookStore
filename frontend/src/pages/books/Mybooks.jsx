@@ -1,28 +1,24 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate for navigation
 import axios from "axios";
 import getImgUrl from "../../utils/getImgUrl";
 
 const MyBooks = () => {
   const [books, setBooks] = useState([]);
+  const navigate = useNavigate(); // Initialize useNavigate for navigation
 
   // Fetch all books
   useEffect(() => {
-    console.log("Local Storage Content:", { ...localStorage });
-
     const authorIdFromStorage = JSON.parse(localStorage.getItem("user"))?.id;
-    console.log("Author ID from LocalStorage:", authorIdFromStorage); // Ensure it's correctly fetched
 
-    // Fetch all books from backend
+    // Fetch all books from the backend
     axios
-      .get(`http://localhost:5000/all-books`) // Updated endpoint to fetch all books
+      .get(`http://localhost:5000/all-books`)
       .then((response) => {
-        console.log("Fetched Books:", response.data); // Log the fetched books
-
         // Filter books based on authorId from localStorage
         const filteredBooks = response.data.filter(
           (book) => book.authorId === authorIdFromStorage
         );
-        console.log("Filtered Books:", filteredBooks); // Log the filtered books
         setBooks(filteredBooks); // Set the filtered books in the state
       })
       .catch((error) => console.error("Error fetching books:", error));
@@ -34,7 +30,6 @@ const MyBooks = () => {
       axios
         .delete(`http://localhost:5000/books/${bookId}`)
         .then(() => {
-          // Update UI by removing the deleted book
           setBooks((prevBooks) =>
             prevBooks.filter((book) => book._id !== bookId)
           );
@@ -45,6 +40,11 @@ const MyBooks = () => {
           alert("Failed to delete book. Please try again.");
         });
     }
+  };
+
+  // Handle edit book
+  const handleEdit = (bookId) => {
+    navigate(`/edit-book/${bookId}`); // Navigate to the EditBook page with the bookId
   };
 
   return (
@@ -73,13 +73,23 @@ const MyBooks = () => {
                   ${book.oldPrice}
                 </p>
                 <p className="text-red-600 font-bold">${book.newPrice}</p>
-                {/* Delete Button */}
-                <button
-                  onClick={() => handleDelete(book._id)}
-                  className="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 mt-4 w-full"
-                >
-                  Delete Book
-                </button>
+                {/* Action Buttons */}
+                <div className="flex justify-between mt-4">
+                  {/* Edit Button */}
+                  <button
+                    onClick={() => handleEdit(book._id)}
+                    className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700"
+                  >
+                    Edit
+                  </button>
+                  {/* Delete Button */}
+                  <button
+                    onClick={() => handleDelete(book._id)}
+                    className="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700"
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
             </div>
           ))

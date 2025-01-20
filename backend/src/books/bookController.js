@@ -93,8 +93,72 @@ const deleteBook = async (req, res) => {
   }
 };
 
+const updateBook = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Ensure ID is provided
+    if (!id) {
+      return res.status(400).send({ message: "Book ID is required!" });
+    }
+
+    const {
+      title,
+      description,
+      category,
+      trending,
+      oldPrice,
+      newPrice,
+      authorId,
+    } = req.body;
+
+    // Validate all required fields
+    if (
+      !title ||
+      !description ||
+      !category ||
+      !authorId ||
+      !oldPrice ||
+      !newPrice
+    ) {
+      return res.status(400).send({ message: "All fields are required!" });
+    }
+
+    // If there's a file update (coverImage), include it
+    let updatedBook = {
+      title,
+      description,
+      category,
+      trending: trending === "on",
+      oldPrice,
+      newPrice,
+      authorId,
+    };
+
+    if (req.file) {
+      updatedBook.coverImage = req.file.path;
+    }
+
+    // Update the book in the database
+    const book = await Book.findByIdAndUpdate(id, updatedBook, { new: true });
+
+    if (!book) {
+      return res.status(404).send({ message: "Book not found!" });
+    }
+
+    res.status(200).send({
+      message: "Book updated successfully",
+      book,
+    });
+  } catch (error) {
+    console.error("Error updating book:", error);
+    res.status(500).send({ message: "Failed to update book" });
+  }
+};
+
 module.exports = {
   postABook,
   getAllBooks,
   deleteBook,
+  updateBook,
 };
