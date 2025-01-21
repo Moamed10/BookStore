@@ -18,6 +18,7 @@ const AddBook = () => {
   } = useForm();
 
   const [userId, setUserId] = useState(null);
+  const [notification, setNotification] = useState({ message: "", type: "" });
 
   // Get the user ID from the token in localStorage (or wherever you store it)
   useEffect(() => {
@@ -57,14 +58,22 @@ const AddBook = () => {
       );
 
       if (response.status === 200) {
+        setNotification({message:"Book added successfully",type:'success'})
         console.log("Book added successfully");
+        // formData({title:'',description:'',category:'',trending:'',oldPrice:'',newPrice:'',coverImage:''})
       } else {
         console.error("Failed to add book");
+        throw new Error("Failed to add book")
       }
     } catch (error) {
       console.error("Error adding book:", error);
+      setNotification({message:"Error adding book",type:''})
     }
+    setTimeout(() => {
+      setNotification({ message: "", type: "" });
+    }, 4000);
   };
+  
 
   return (
     <div className="h-[calc(100vh-120px)] flex justify-center items-center">
@@ -245,6 +254,15 @@ const AddBook = () => {
           </div>
         </form>
       </div>
+      {notification.message && (
+        <div
+          className={`mt-4 p-4 rounded-md ${
+            notification.type === "success" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+          }`}
+        >
+          {notification.message}
+        </div>
+      )}
     </div>
   );
 };
