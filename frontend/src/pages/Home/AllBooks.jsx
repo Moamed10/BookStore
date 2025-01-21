@@ -13,6 +13,7 @@ export default function AllBooks() {
   const [addedBook, setAddedBook] = useState(null);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  
 
   // Load books data
   useEffect(() => {
