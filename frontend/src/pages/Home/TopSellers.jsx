@@ -1,3 +1,4 @@
+// TopSellers.js
 import React, { useEffect, useState } from "react";
 import BooksCard from "../books/BooksCard";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -6,6 +7,7 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 import { Pagination, Navigation } from "swiper/modules";
 import axios from "axios";
+import { handleAddToCart } from "../../utils/handleAddToCart"; // Import the function
 
 const categories = [
   "choose category", // Optional placeholder
@@ -38,27 +40,6 @@ const TopSellers = () => {
             book.category.toLowerCase() === selectedCategory.toLowerCase()
         );
 
-  // Add book to cart function
-  const handleAddToCart = (book) => {
-    const cart = JSON.parse(localStorage.getItem("cart")) || [];
-    const existingBook = cart.find((item) => item._id === book._id);
-
-    if (existingBook) {
-      existingBook.quantity += 1;
-    } else {
-      cart.push({ ...book, quantity: 1 });
-    }
-
-    localStorage.setItem("cart", JSON.stringify(cart));
-
-    setAddedBook(book); // Set the added book to show in popup
-    setIsPopupVisible(true); // Show popup
-    setTimeout(() => {
-      setIsPopupVisible(false); // Hide popup after 2 seconds
-      window.location.reload(); // Refresh the page to update the cart count
-    }, 2000);
-  };
-
   return (
     <div className="py-10">
       <h1 className="text-3xl font-semibold mb-6">Most Selling</h1>
@@ -87,7 +68,7 @@ const TopSellers = () => {
 
       <Swiper
         slidesPerView={1}
-        navigation={true}
+        navigation={true} // This will automatically add left and right arrows
         spaceBetween={30}
         breakpoints={{
           640: {
@@ -107,13 +88,18 @@ const TopSellers = () => {
             spaceBetween: 50,
           },
         }}
-        modules={[Pagination, Navigation]}
+        modules={[Pagination, Navigation]} // Use the navigation module
         className="mySwiper"
       >
         {filterBooks.length > 0 &&
           filterBooks.map((book, index) => (
             <SwiperSlide key={index}>
-              <BooksCard book={book} onAddToCart={handleAddToCart} />
+              <BooksCard
+                book={book}
+                onAddToCart={(book) => {
+                  handleAddToCart(book, setAddedBook, setIsPopupVisible); // Call the function
+                }}
+              />
             </SwiperSlide>
           ))}
       </Swiper>
