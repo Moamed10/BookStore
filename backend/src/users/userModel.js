@@ -1,11 +1,4 @@
 const mongoose = require("mongoose");
-const categories = [
-  "choose category",
-  "Business",
-  "fiction",
-  "Horror",
-  "Adventure",
-];
 
 const userSchema = new mongoose.Schema({
   username: {
@@ -26,10 +19,6 @@ const userSchema = new mongoose.Schema({
     type: String,
     enum: ["buyer", "seller"],
     default: "buyer",
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now,
   },
   favoriteBooks: [
     {

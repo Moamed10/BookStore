@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const categories = [
-  "choose category", 
+  "choose category",
   "Business",
   "Fiction",
   "Horror",
@@ -21,7 +21,7 @@ const bookSchema = new mongoose.Schema(
     category: {
       type: String,
       required: true,
-      enum: categories, 
+      enum: categories,
     },
     trending: {
       type: Boolean,
@@ -39,6 +39,16 @@ const bookSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    pdfLink: {
+      type: String,
+      required: true, // Ensures every book has a corresponding PDF link.
+    },
+    purchasedBy: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
     createdAt: {
       type: Date,
       default: Date.now,
@@ -56,7 +66,7 @@ const bookSchema = new mongoose.Schema(
     ],
   },
   {
-    timestamps: true, 
+    timestamps: true,
   }
 );
 

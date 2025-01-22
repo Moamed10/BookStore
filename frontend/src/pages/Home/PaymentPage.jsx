@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const PaymentPage = () => {
   const [cardNumber, setCardNumber] = useState("");
@@ -12,26 +13,67 @@ const PaymentPage = () => {
   const location = useLocation();
   const subtotal = location.state?.subtotal || 0;
 
-  // Define VAT percentage (e.g., 21%)
+  // Simulate VAT and total calculation
   const VAT_PERCENTAGE = 0.21;
-
-  // Calculate the VAT (BTW)
   const vatAmount = subtotal * VAT_PERCENTAGE;
-
-  // Calculate the total price including VAT
   const totalPrice = subtotal + vatAmount;
 
-  const handlePaymentSubmit = (e) => {
+  // Check if user is logged in by verifying token in localStorage
+  const token = localStorage.getItem("token");
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  // If the user is not logged in, redirect to login page
+  if (!token) {
+    navigate("/login");
+    return null;
+  }
+
+  const handlePaymentSubmit = async (e) => {
     e.preventDefault();
 
-    // Fake payment processing
-    setTimeout(() => {
-      setIsPaymentSuccessful(true); // Simulate a successful payment after 2 seconds
-    }, 2000);
-  };
+    const userEmail = user?.email;
 
-  const handleGoToHome = () => {
-    navigate("/"); // Redirect to homepage after payment success
+    if (!userEmail) {
+      alert("Error: User email not found.");
+      navigate("/login");
+      return;
+    }
+
+    // Simulate successful payment after a short delay
+    setTimeout(async () => {
+      try {
+        const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
+        const bookIds = cartItems.map((item) => item._id);
+
+        if (!bookIds.length) {
+          alert("Your cart is empty.");
+          return;
+        }
+
+        const response = await axios.post("http://localhost:5000/purchase", {
+          userEmail,
+          bookIds,
+        });
+
+        // Assuming the response contains the updated boughtBooks list
+        const updatedBoughtBooks = response.data.updatedBoughtBooks;
+
+        // Update localStorage with the updated boughtBooks
+        localStorage.setItem("boughtBooks", JSON.stringify(updatedBoughtBooks));
+
+        // Optionally update the user object in localStorage
+        const updatedUser = { ...user, boughtBooks: updatedBoughtBooks };
+        localStorage.setItem("user", JSON.stringify(updatedUser));
+
+        setIsPaymentSuccessful(true);
+
+        // After successful payment, redirect to "My Library"
+        setTimeout(() => {}, 2000);
+      } catch (error) {
+        console.error("Error during payment:", error);
+        alert("Error during payment. Please try again.");
+      }
+    }, 2000); // Simulated delay
   };
 
   return (
@@ -43,8 +85,9 @@ const PaymentPage = () => {
           <h3 className="text-xl font-bold text-green-600 mb-4">
             Payment Successful!
           </h3>
+          <p>Your purchase has been recorded. Thank you for buying!</p>
           <button
-            onClick={handleGoToHome}
+            onClick={() => navigate("/")}
             className="bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700"
           >
             Go to Home
