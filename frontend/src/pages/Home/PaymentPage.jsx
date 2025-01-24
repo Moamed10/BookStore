@@ -65,10 +65,16 @@ const PaymentPage = () => {
         const updatedUser = { ...user, boughtBooks: updatedBoughtBooks };
         localStorage.setItem("user", JSON.stringify(updatedUser));
 
+        // Clear the cart after payment success
+        localStorage.removeItem("cart");
+
         setIsPaymentSuccessful(true);
 
         // After successful payment, redirect to "My Library"
-        setTimeout(() => {}, 2000);
+        setTimeout(() => {
+          navigate("/my-library"); // Redirect to "My Library" after purchase
+          window.location.reload();
+        }, 2000);
       } catch (error) {
         console.error("Error during payment:", error);
         alert("Error during payment. Please try again.");
@@ -90,7 +96,7 @@ const PaymentPage = () => {
             onClick={() => navigate("/")}
             className="bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700"
           >
-            Go to Home
+            Go to Home-Page
           </button>
         </div>
       ) : (

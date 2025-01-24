@@ -1,98 +1,142 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios"; // Using axios for HTTP requests
-import getImgUrl from "../../utils/getImgUrl"; // Assuming this is your utility to handle image URLs
+import axios from "axios";
+import getImgUrl from "../../utils/getImgUrl";
+import { Link } from "react-router-dom";
+import { BookOpen, Sparkles } from "lucide-react";
 
 const MyLibrary = () => {
-  const [books, setBooks] = useState([]); // All books to display
-  const [boughtBooks, setBoughtBooks] = useState([]); // User's bought books IDs
+  const [books, setBooks] = useState([]);
+  const [boughtBooks, setBoughtBooks] = useState([]);
   const [error, setError] = useState(null);
+  const [welcomeMessage, setWelcomeMessage] = useState("");
 
   useEffect(() => {
+    // Dynamic welcome message based on time of day
+    const getWelcomeMessage = () => {
+      const hour = new Date().getHours();
+      if (hour < 12) return "Good Morning, Reader!";
+      if (hour < 18) return "Good Afternoon, Book Lover!";
+      return "Good Evening, Literary Explorer!";
+    };
+    setWelcomeMessage(getWelcomeMessage());
+
     const user = JSON.parse(localStorage.getItem("user"));
 
     if (user) {
-      // Step 1: Fetch the boughtBooks array (only the IDs) from the backend using user.id
       axios
         .get(`http://localhost:5000/user/${user.id}/bought-books`)
         .then((response) => {
-          setBoughtBooks(response.data); // Save the bought books IDs
-          console.log("Bought Books IDs:", response.data); // Log the bought books (IDs)
+          setBoughtBooks(response.data);
         })
         .catch((error) => {
           console.error("Error fetching bought books:", error);
-          setError("An error occurred while fetching your bought books.");
+          setError("An error occurred while fetching your books.");
         });
     } else {
       setError("User not logged in. Please log in.");
     }
-  }, []); // Empty dependency array ensures this runs only once on component mount
+  }, []);
 
   useEffect(() => {
-    // Step 2: Fetch all books after getting boughtBooks
     if (boughtBooks.length > 0) {
-      // Step 3: Fetch full details of the bought books
       axios
-        .get(`http://localhost:5000/all-books`) // Get all books
+        .get(`http://localhost:5000/all-books`)
         .then((response) => {
-          console.log("All Books:", response.data); // Log the all-books data to check its structure
-
-          // Step 4: Filter books based on boughtBooks IDs
           const filteredBooks = response.data.filter((book) =>
-            boughtBooks.some((boughtBook) => {
-              // Corrected comparison logic
-              console.log(
-                "Comparing book ID:",
-                book._id,
-                "with boughtBook ID:",
-                boughtBook
-              );
-              return String(book._id) === String(boughtBook);
-            })
+            boughtBooks.some(
+              (boughtBook) => String(book._id) === String(boughtBook)
+            )
           );
-          setBooks(filteredBooks); // Set filtered books to state
+          setBooks(filteredBooks);
         })
         .catch((error) => {
           console.error("Error fetching all books:", error);
-          setError("An error occurred while fetching all books.");
+          setError("An error occurred while fetching books.");
         });
     }
-  }, [boughtBooks]); // Re-run this effect when boughtBooks change
+  }, [boughtBooks]);
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
-      <h1 className="text-3xl font-bold text-center mb-8">My Library</h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-100 p-8">
+      <div className="max-w-7xl mx-auto">
+        <div className="text-center mb-12">
+          <div className="flex items-center justify-center mb-4">
+            <Sparkles className="text-purple-500 mr-3 animate-pulse" />
+            <h1 className="text-4xl font-extrabold text-gray-800 tracking-tight">
+              {welcomeMessage}
+            </h1>
+            <Sparkles className="text-purple-500 ml-3 animate-pulse" />
+          </div>
+
+          <blockquote className="italic text-xl text-gray-600 max-w-2xl mx-auto">
+            "In the world of books, every page is a portal to a new adventure."
+            <span className="block text-base mt-2 text-gray-500">
+              - Anonymous
+            </span>
+          </blockquote>
+        </div>
+
         {error ? (
-          <p className="text-center text-red-600">{error}</p>
+          <div className="text-center bg-red-50 border border-red-200 rounded-lg p-6">
+            <p className="text-red-600 text-lg font-semibold">{error}</p>
+          </div>
         ) : books.length > 0 ? (
-          books.map((book) => (
-            <div
-              key={book._id}
-              className="bg-white shadow-md rounded-lg overflow-hidden hover:scale-105 transition-transform duration-300"
-            >
-              {/* Book Cover */}
-              <div className="h-72 w-full overflow-hidden rounded-md border border-gray-200 shadow-md">
-                <img
-                  src={getImgUrl(book.coverImage)}
-                  alt={book.title}
-                  className="w-full h-full object-cover object-center"
-                />
-              </div>
-              {/* Book Details */}
-              <div className="p-4">
-                <h2 className="text-lg font-semibold mb-2">{book.title}</h2>
-                <p className="text-gray-600 text-sm mb-2">{book.description}</p>
-                <p className="text-red-600 line-through font-bold">
-                  ${book.oldPrice}
-                </p>
-                <p className="text-red-600 font-bold">${book.newPrice}</p>
-              </div>
+          <>
+            <div className="mb-6 text-center">
+              <p className="text-gray-700 text-lg">
+                You have{" "}
+                <span className="font-bold text-purple-600">
+                  {books.length}
+                </span>{" "}
+                books in your library
+              </p>
             </div>
-          ))
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+              {books.map((book) => (
+                <div
+                  key={book._id}
+                  className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2"
+                >
+                  <div className="h-80 w-full overflow-hidden rounded-t-xl relative">
+                    <img
+                      src={getImgUrl(book.coverImage)}
+                      alt={book.title}
+                      className="w-full h-full object-cover object-center"
+                    />
+                    <div className="absolute inset-0 bg-black opacity-20 hover:opacity-10 transition-opacity"></div>
+                  </div>
+
+                  <div className="p-6 space-y-3">
+                    <h2 className="text-xl font-bold text-gray-900 line-clamp-2">
+                      {book.title}
+                    </h2>
+                    <p className="text-gray-600 text-sm line-clamp-3 mb-4">
+                      {book.description}
+                    </p>
+
+                    <div className="flex justify-center">
+                      <Link
+                        to={book.pdfLink}
+                        className="flex items-center justify-center 
+                        bg-indigo-500 text-white px-6 py-3 rounded-full 
+                        hover:bg-indigo-600 transition-colors duration-300 
+                        group w-full text-center"
+                      >
+                        <BookOpen className="mr-3 w-6 h-6 group-hover:animate-pulse" />
+                        Start Reading
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
         ) : (
-          <p className="text-gray-600 text-center">
-            No books found in your library.
-          </p>
+          <div className="text-center bg-white rounded-lg shadow-md p-12">
+            <p className="text-gray-600 text-xl">
+              Your library is waiting to be filled with adventures.
+            </p>
+          </div>
         )}
       </div>
     </div>
