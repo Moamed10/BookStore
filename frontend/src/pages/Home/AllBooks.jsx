@@ -13,6 +13,7 @@ export default function AllBooks() {
   const [addedBook, setAddedBook] = useState(null);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  
 
   // Load books data
   useEffect(() => {
@@ -94,7 +95,7 @@ export default function AllBooks() {
                 <img
                   src={getImgUrl(book.coverImage)} // Use getImgUrl here
                   alt={book.title}
-                  className="w-full h-full object-cover object-center"
+                  className="w-full h-full object-contain"
                 />
               </div>
               <div className="p-4">
