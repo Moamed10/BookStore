@@ -99,7 +99,7 @@ export default function AllBooks() {
                 <img
                   src={getImgUrl(book.coverImage)} // Use getImgUrl here
                   alt={book.title}
-                  className="w-full h-full object-cover object-center"
+                  className="w-full h-full object-contain"
                 />
               </div>
               <div className="p-4">
