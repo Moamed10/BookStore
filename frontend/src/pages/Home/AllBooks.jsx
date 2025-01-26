@@ -13,7 +13,11 @@ export default function AllBooks() {
   const [addedBook, setAddedBook] = useState(null);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  
+  const [visibleBooks, setVisibleBooks]=useState(8)
+
+  const loadMore = () =>{
+    setVisibleBooks((prev) => prev + 4);
+  }
 
   // Load books data
   useEffect(() => {
@@ -84,7 +88,7 @@ export default function AllBooks() {
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
         {books &&
-          books.map((book) => (
+          books.slice(0,visibleBooks).map((book) => (
             <div
               key={book._id}
               className="bg-white shadow-md rounded-lg overflow-hidden hover:scale-105 transition-transform duration-300"
@@ -119,6 +123,17 @@ export default function AllBooks() {
             </div>
           ))}
       </div>
+      {visibleBooks < books.length && (
+        <div className="flex justify-center mt-4">
+        <button
+          onClick={loadMore}
+          className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition"
+        >
+          Load More
+        </button>
+      </div>
+
+      )}
     </div>
   );
 }
