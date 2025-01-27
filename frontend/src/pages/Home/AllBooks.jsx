@@ -12,8 +12,7 @@ export default function AllBooks() {
   const [addedBook, setAddedBook] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState("choose category");
   const [isLoading, setIsLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1); // Pagination: Current Page
-  const booksPerPage = 12; // Number of books to show per page
+  const [visibleBooks, setVisibleBooks] = useState(8); // Visible books count
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
@@ -25,7 +24,10 @@ export default function AllBooks() {
     "Adventure",
   ];
 
-  // Fetch books from API
+  const loadMore = () => {
+    setVisibleBooks((prev) => prev + 4); // Increase visible books
+  };
+
   useEffect(() => {
     const query = searchParams.get("q");
 
@@ -49,7 +51,7 @@ export default function AllBooks() {
       });
   }, [searchParams]);
 
-  const filterBooks =
+  const filteredBooks =
     selectedCategory === "choose category"
       ? books
       : books.filter(
@@ -57,11 +59,6 @@ export default function AllBooks() {
             book.category &&
             book.category.toLowerCase() === selectedCategory.toLowerCase()
         );
-
-  // Pagination logic: Calculate books to display based on current page
-  const indexOfLastBook = currentPage * booksPerPage;
-  const indexOfFirstBook = indexOfLastBook - booksPerPage;
-  const currentBooks = filterBooks.slice(indexOfFirstBook, indexOfLastBook);
 
   const handleNavigateToDetails = (bookId) => {
     navigate(`/books/${bookId}`);
@@ -77,7 +74,6 @@ export default function AllBooks() {
         </div>
       )}
 
-      {/* Header */}
       <div className="max-w-7xl mx-auto px-4 py-12">
         <div className="text-center mb-16">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
@@ -124,7 +120,7 @@ export default function AllBooks() {
           <>
             {/* Book Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-              {currentBooks.map((book) => (
+              {filteredBooks.slice(0, visibleBooks).map((book) => (
                 <div
                   key={book._id}
                   onClick={() => handleNavigateToDetails(book._id)}
@@ -177,23 +173,17 @@ export default function AllBooks() {
               ))}
             </div>
 
-            {/* Pagination */}
-            <div className="flex justify-center items-center mt-12">
-              <button
-                disabled={currentPage === 1}
-                onClick={() => setCurrentPage(currentPage - 1)}
-                className="py-2 px-4 bg-indigo-600 text-white rounded-lg mx-2 hover:bg-indigo-700 disabled:opacity-50"
-              >
-                Previous
-              </button>
-              <button
-                disabled={currentBooks.length < booksPerPage}
-                onClick={() => setCurrentPage(currentPage + 1)}
-                className="py-2 px-4 bg-indigo-600 text-white rounded-lg mx-2 hover:bg-indigo-700 disabled:opacity-50"
-              >
-                Next
-              </button>
-            </div>
+            {/* Load More */}
+            {visibleBooks < filteredBooks.length && (
+              <div className="flex justify-center mt-4">
+                <button
+                  onClick={loadMore}
+                  className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition"
+                >
+                  Load More
+                </button>
+              </div>
+            )}
           </>
         )}
       </div>

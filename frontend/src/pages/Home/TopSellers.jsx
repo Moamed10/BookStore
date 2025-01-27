@@ -91,6 +91,7 @@ const TopSellers = () => {
         modules={[Pagination, Navigation]} // Use the navigation module
         className="mySwiper"
       >
+        <div className="fixed top-5 right-5 bg-green-600 text-white px-4 py-2 rounded shadow-lg transition-opacity duration-300">
         {filterBooks.length > 0 &&
           filterBooks.map((book, index) => (
             <SwiperSlide key={index}>
@@ -102,6 +103,7 @@ const TopSellers = () => {
               />
             </SwiperSlide>
           ))}
+          </div>
       </Swiper>
     </div>
   );
