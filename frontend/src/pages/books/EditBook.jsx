@@ -16,6 +16,7 @@ const EditBook = () => {
     category: "",
     coverImage: null, // Handle file uploads
     authorId: "", // Required field
+    pdfLink: "", // Handle the PDF link
   });
 
   // Fetch the book data by ID
@@ -36,6 +37,7 @@ const EditBook = () => {
             category: selectedBook.category,
             coverImage: selectedBook.coverImage, // URL for display
             authorId: selectedBook.authorId,
+            pdfLink: selectedBook.pdfLink || "", // Populate existing pdfLink if available
           });
         } else {
           navigate("/404"); // Redirect if no book matches the ID
@@ -176,6 +178,17 @@ const EditBook = () => {
             name="coverImage"
             onChange={handleFileChange}
             className="w-full p-2 border border-gray-300 rounded"
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block text-lg font-semibold">PDF Link</label>
+          <input
+            type="text"
+            name="pdfLink"
+            value={formData.pdfLink}
+            onChange={handleChange}
+            className="w-full p-2 border border-gray-300 rounded"
+            placeholder="Enter PDF link"
           />
         </div>
         <button

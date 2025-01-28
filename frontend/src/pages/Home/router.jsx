@@ -15,11 +15,8 @@ import PaymentPage from "../pages/Home/PaymentPage";
 import ProtectedRoute from "./ProtectedRoute ";
 import EditBook from "../pages/books/EditBook";
 import MyLibrary from "../pages/books/MyLibrary";
-import AboutPage from "../pages/Home/AboutPage";
 const isLoggedIn = () => {
-  const token = localStorage.getItem("token");
-  // You can extend this to check token validity as well (e.g., decoding JWT, expiration check)
-  return !!token;
+  return !!localStorage.getItem("token");
 };
 
 const router = createBrowserRouter([
@@ -78,12 +75,12 @@ const router = createBrowserRouter([
         element: <EditBook />,
       },
       {
-        path: "/my-library",
-        element: <MyLibrary />,
-      },
-      {
-        path: "/about-us",
-        element: <AboutPage />,
+        path: "/z",
+        element: isLoggedIn() ? (
+          <MyLibrary />
+        ) : (
+          <Navigate to="/login" replace />
+        ),
       },
     ],
   },

@@ -1,3 +1,4 @@
+// Frontend (React - Login.js)
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { FaGoogle } from "react-icons/fa";
@@ -31,13 +32,25 @@ const Login = () => {
         formData
       );
       console.log(response);
-      // console.log(response.data.token);
 
-      // Store token in localStorage
+      // Store token and user data in localStorage
       if (response.data.token) {
-        localStorage.setItem("token", response.data.token);
-        localStorage.setItem("user", JSON.stringify(response.data.user));
+        const { token, user } = response.data;
+
+        // Save the token in localStorage
+        localStorage.setItem("token", token);
+        localStorage.setItem("userId", user.id);
+
+        // Save the user object in localStorage as a string
+        localStorage.setItem("user", JSON.stringify(user));
+
+        // Update the boughtBooks array in localStorage
+        localStorage.setItem("boughtBooks", JSON.stringify(user.boughtBooks));
+
+        // Navigate to the homepage or another page
         navigate("/");
+
+        // Reload the window (optional)
         window.location.reload();
       }
 

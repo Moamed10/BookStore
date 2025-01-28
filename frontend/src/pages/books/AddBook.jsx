@@ -44,6 +44,7 @@ const AddBook = () => {
     formData.append("newPrice", data.newPrice);
     formData.append("coverImage", data.coverImage[0]); // File upload
     formData.append("authorId", userId); // Add the user ID to the form data
+    formData.append("pdfLink", data.pdfLink); // Add the PDF link to the form data
 
     try {
       // Send the form data using axios to the backend URL
@@ -193,6 +194,29 @@ const AddBook = () => {
             {errors.coverImage && (
               <p className="text-red-500 text-xs italic">
                 {errors.coverImage.message}
+              </p>
+            )}
+          </div>
+
+          {/* PDF Link Field */}
+          <div className="mb-4">
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="pdfLink"
+            >
+              PDF Link
+            </label>
+            <input
+              {...register("pdfLink", { required: "PDF link is required" })}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="pdfLink"
+              name="pdfLink"
+              type="text"
+              placeholder="Enter PDF link or path"
+            />
+            {errors.pdfLink && (
+              <p className="text-red-500 text-xs italic">
+                {errors.pdfLink.message}
               </p>
             )}
           </div>
