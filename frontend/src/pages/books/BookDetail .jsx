@@ -4,6 +4,9 @@ import getImgUrl from "../../utils/getImgUrl";
 import axios from "axios";
 import { FiShoppingCart } from "react-icons/fi";
 
+// Import the handleAddToCart function
+import { handleAddToCart } from "../../utils/handleAddToCart";
+
 const BookDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -32,37 +35,17 @@ const BookDetail = () => {
       });
   }, [id, navigate]);
 
-  const handleAddToCart = () => {
-    const cart = JSON.parse(localStorage.getItem("cart")) || [];
-    const existingBook = cart.find((item) => item._id === book._id);
-
-    if (existingBook) {
-      existingBook.quantity += 1;
-    } else {
-      cart.push({ ...book, quantity: 1 });
-    }
-
-    localStorage.setItem("cart", JSON.stringify(cart));
-
-    // Set state for showing popup
-    setAddedBook(book);
-    setIsPopupVisible(true);
-
-    // Refresh the page after adding a book to the cart using window.location.reload
-    setTimeout(() => {
-      setIsPopupVisible(false);
-      window.location.reload(false); // Refreshes the page
-    }, 2000); // Popup disappears after 2 seconds
-  };
-
+  // Recommended books based on category
   const recommendedBooks =
     book && books.length > 0
-      ? books.filter(
-          (b) =>
-            b.category &&
-            b.category.toLowerCase() === book.category.toLowerCase() &&
-            b._id !== book._id
-        )
+      ? books
+          .filter(
+            (b) =>
+              b.category &&
+              b.category.toLowerCase() === book.category.toLowerCase() &&
+              b._id !== book._id
+          )
+          .slice(0, 4) // Limit to a maximum of 4 books
       : [];
 
   if (!book) {
@@ -93,7 +76,9 @@ const BookDetail = () => {
           <h6 className="text-2xl font-semibold">${book.newPrice}</h6>
           <button
             className="bg-blue-600 text-white py-3 px-8 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-300"
-            onClick={handleAddToCart}
+            onClick={() =>
+              handleAddToCart(book, setAddedBook, setIsPopupVisible)
+            }
           >
             Add to Cart
           </button>
@@ -104,33 +89,41 @@ const BookDetail = () => {
       <div className="mt-8">
         <h2 className="text-3xl font-semibold mb-4">Recommended Books</h2>
         {recommendedBooks.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             {recommendedBooks.map((recommendedBook) => (
               <div
                 key={recommendedBook._id}
-                className="bg-white shadow-md rounded-lg overflow-hidden hover:scale-105 transition-transform duration-300"
+                className="bg-white shadow-md rounded-lg overflow-hidden hover:scale-105 transition-transform duration-300 flex flex-col items-center"
               >
                 <img
                   src={getImgUrl(recommendedBook.coverImage)}
                   alt={recommendedBook.title}
-                  className="w-full h-56 object-cover object-center"
+                  className="w-full h-60 object-cover object-center"
                 />
-                <div className="p-4">
-                  <h2 className="text-lg font-semibold mb-2">
+                <div className="p-2 text-center">
+                  <h2 className="text-sm font-semibold mb-1 text-gray-800">
                     {recommendedBook.title}
                   </h2>
-                  <p className="text-gray-600 text-sm mb-2">
-                    {recommendedBook.description}
+                  <p className="text-xs text-gray-600 mb-1">
+                    {recommendedBook.description.length > 50
+                      ? `${recommendedBook.description.slice(0, 50)}...`
+                      : recommendedBook.description}
                   </p>
-                  <p className="text-red-600 line-through font-bold">
+                  <p className="text-xs text-red-600 line-through font-bold">
                     ${recommendedBook.oldPrice}
                   </p>
-                  <p className="text-red-600 font-bold">
+                  <p className="text-sm text-red-600 font-bold">
                     ${recommendedBook.newPrice}
                   </p>
                   <button
-                    className="btn-primary px-6 space-x-1 flex items-center gap-1"
-                    onClick={() => handleAddToCart(recommendedBook)}
+                    className="btn-primary mt-2 px-4 py-2 text-sm flex items-center gap-1 bg-blue-600 text-white rounded hover:bg-blue-700"
+                    onClick={() =>
+                      handleAddToCart(
+                        recommendedBook,
+                        setAddedBook,
+                        setIsPopupVisible
+                      )
+                    }
                   >
                     <FiShoppingCart />
                     <span>Add to Cart</span>

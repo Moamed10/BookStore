@@ -12,6 +12,19 @@ const Profile = () => {
     return null;
   }
 
+  const handleLogout = () => {
+    // Remove user and token from localStorage
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+
+    // Clear the cart from localStorage
+    localStorage.removeItem("cart");
+
+    // Navigate to login page
+    navigate("/login");
+    window.location.reload();
+  };
+
   return (
     <div className="min-h-screen py-16 px-4 bg-gradient-to-br from-gray-900 to-gray-800">
       <div className="max-w-2xl mx-auto bg-gray-800 border border-gray-700 shadow-2xl rounded-xl p-8 md:p-10">
