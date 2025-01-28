@@ -14,7 +14,7 @@ import Mybooks from "../pages/books/Mybooks";
 import PaymentPage from "../pages/Home/PaymentPage";
 import ProtectedRoute from "./ProtectedRoute ";
 import EditBook from "../pages/books/EditBook";
-
+import ChangePassword from "../pages/user/ChangePassword ";
 const isLoggedIn = () => {
   return !!localStorage.getItem("token");
 };
@@ -73,6 +73,14 @@ const router = createBrowserRouter([
       {
         path: "/edit-book/:id",
         element: <EditBook />,
+      },
+      {
+        path: "change-password",
+        element: isLoggedIn() ? (
+          <ChangePassword />
+        ) : (
+          <Navigate to="/login" replace />
+        ),
       },
     ],
   },
