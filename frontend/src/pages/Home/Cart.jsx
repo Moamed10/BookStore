@@ -43,15 +43,16 @@ const Cart = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
-    setCart(storedCart);
-
-    // Check if the user is logged in
     const token = localStorage.getItem("token");
-    if (token) {
-      setIsLoggedIn(true);
-    } else {
+    if (!token) {
+      // If the user is not logged in, clear the cart
+      setCart([]);
+      localStorage.removeItem("cart");
       setIsLoggedIn(false);
+    } else {
+      setIsLoggedIn(true);
+      const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
+      setCart(storedCart);
     }
   }, []);
 
@@ -59,34 +60,23 @@ const Cart = () => {
     const updatedCart = cart.filter((item) => item._id !== id);
     setCart(updatedCart);
     localStorage.setItem("cart", JSON.stringify(updatedCart));
-
-    // Refresh the page to reflect changes
-    window.location.reload(); // Reloads the page after removing an item
   };
 
   const handleClearCart = () => {
     setCart([]);
     localStorage.removeItem("cart");
-
-    // Refresh the page to reflect the empty cart
-    window.location.reload(); // Reloads the page after clearing the cart
   };
-
-  // Calculate the subtotal (total before VAT)
-  const subtotal = cart.reduce(
-    (acc, item) => acc + item.newPrice * item.quantity,
-    0
-  );
 
   const handleProceedToCheckout = () => {
     if (!isLoggedIn) {
-      // Redirect to login page if not logged in
+      alert("You need to log in to proceed to checkout.");
       navigate("/login");
     } else {
-      // Pass the subtotal to the payment page (no VAT yet)
-      navigate("/checkout", {
-        state: { subtotal },
-      });
+      const subtotal = cart.reduce(
+        (acc, item) => acc + item.newPrice * item.quantity,
+        0
+      );
+      navigate("/checkout", { state: { subtotal } });
     }
   };
 
@@ -122,7 +112,12 @@ const Cart = () => {
       <div className="border-t border-gray-200 px-6 py-6 sm:px-8 bg-gray-50 rounded-b-lg">
         <div className="flex justify-between items-center text-lg font-semibold text-gray-900">
           <p>Subtotal</p>
-          <p>${subtotal.toFixed(2)}</p>
+          <p>
+            $
+            {cart
+              .reduce((acc, item) => acc + item.newPrice * item.quantity, 0)
+              .toFixed(2)}
+          </p>
         </div>
         <p className="mt-2 text-sm text-gray-500">
           Shipping and taxes calculated at checkout.

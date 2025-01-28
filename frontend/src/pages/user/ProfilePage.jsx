@@ -11,6 +11,19 @@ const Profile = () => {
     return null;
   }
 
+  const handleLogout = () => {
+    // Remove user and token from localStorage
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+
+    // Clear the cart from localStorage
+    localStorage.removeItem("cart");
+
+    // Navigate to login page
+    navigate("/login");
+    window.location.reload();
+  };
+
   return (
     <div className="min-h-screen py-16 px-4 bg-gray-900">
       <div className="max-w-2xl mx-auto bg-gray-800 border border-gray-700 shadow-md rounded-lg p-8 md:p-10">
@@ -54,11 +67,7 @@ const Profile = () => {
 
         <div className="mt-6">
           <button
-            onClick={() => {
-              localStorage.removeItem("token");
-              localStorage.removeItem("user");
-              navigate("/login");
-            }}
+            onClick={handleLogout} // Call the logout handler
             className="w-full py-3 px-6 bg-red-600 text-white font-serif text-lg rounded-md hover:bg-red-700 transition-colors duration-200 shadow-md"
           >
             Log Out
