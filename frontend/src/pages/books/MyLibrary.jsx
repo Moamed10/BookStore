@@ -116,6 +116,7 @@ const MyLibrary = () => {
 
                     <div className="flex justify-center">
                       <Link
+                        target="blank"
                         to={book.pdfLink}
                         className="flex items-center justify-center 
                         bg-indigo-500 text-white px-6 py-3 rounded-full 
