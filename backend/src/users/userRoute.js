@@ -6,5 +6,7 @@ const userController = require("./userController"); // Make sure the path is cor
 router.post("/signup", userController.signup);
 router.post("/login", userController.login);
 router.post("/change-password", userController.changePassword);
+router.post("/purchase", userController.purchaseBook);
+router.get("/user/:userId/bought-books", userController.getBoughtBooks);
 
 module.exports = router;

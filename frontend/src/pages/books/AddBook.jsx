@@ -18,6 +18,7 @@ const AddBook = () => {
   } = useForm();
 
   const [userId, setUserId] = useState(null);
+  const [notification, setNotification] = useState({ message: "", type: "" });
 
   // Get the user ID from the token in localStorage (or wherever you store it)
   useEffect(() => {
@@ -43,6 +44,7 @@ const AddBook = () => {
     formData.append("newPrice", data.newPrice);
     formData.append("coverImage", data.coverImage[0]); // File upload
     formData.append("authorId", userId); // Add the user ID to the form data
+    formData.append("pdfLink", data.pdfLink); // Add the PDF link to the form data
 
     try {
       // Send the form data using axios to the backend URL
@@ -57,14 +59,22 @@ const AddBook = () => {
       );
 
       if (response.status === 200) {
+        setNotification({message:"Book added successfully",type:'success'})
         console.log("Book added successfully");
+        // formData({title:'',description:'',category:'',trending:'',oldPrice:'',newPrice:'',coverImage:''})
       } else {
         console.error("Failed to add book");
+        throw new Error("Failed to add book")
       }
     } catch (error) {
       console.error("Error adding book:", error);
+      setNotification({message:"Error adding book",type:''})
     }
+    setTimeout(() => {
+      setNotification({ message: "", type: "" });
+    }, 4000);
   };
+  
 
   return (
     <div className="h-[calc(100vh-120px)] flex justify-center items-center">
@@ -188,6 +198,29 @@ const AddBook = () => {
             )}
           </div>
 
+          {/* PDF Link Field */}
+          <div className="mb-4">
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="pdfLink"
+            >
+              PDF Link
+            </label>
+            <input
+              {...register("pdfLink", { required: "PDF link is required" })}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="pdfLink"
+              name="pdfLink"
+              type="text"
+              placeholder="Enter PDF link or path"
+            />
+            {errors.pdfLink && (
+              <p className="text-red-500 text-xs italic">
+                {errors.pdfLink.message}
+              </p>
+            )}
+          </div>
+
           {/* Old Price Field */}
           <div className="mb-4">
             <label
@@ -245,6 +278,15 @@ const AddBook = () => {
           </div>
         </form>
       </div>
+      {notification.message && (
+        <div
+          className={`mt-4 p-4 rounded-md ${
+            notification.type === "success" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+          }`}
+        >
+          {notification.message}
+        </div>
+      )}
     </div>
   );
 };

@@ -33,10 +33,20 @@ const Navbar = () => {
   }, []);
 
   const handleLogout = () => {
+    // Remove user data and token from localStorage
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+
+    // Also remove cart data from localStorage when logging out
+    localStorage.removeItem("cart");
+
+    // Clear the current user state
     setCurrentUser(null);
+
+    // Redirect to login page
     navigate("/login");
+
+    // Reload the page to reflect the logout changes (clear cart)
     window.location.reload();
   };
 
