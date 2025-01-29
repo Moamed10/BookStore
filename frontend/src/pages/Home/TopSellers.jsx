@@ -47,7 +47,9 @@ const TopSellers = () => {
       <div className="mb-8 flex items-center">
         <select
           onChange={(e) => setSelectedCategory(e.target.value)}
-          className="py-3 px-4 bg-white rounded-xl shadow-sm border border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent cursor-pointer"
+          name="category"
+          id="category"
+          className="border bg-[#EAEAEA] border-gray-300 rounded-md px-4 py-2 focus:outline-none"
         >
           {categories.map((category, index) => (
             <option key={index} value={category}>
