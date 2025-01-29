@@ -47,9 +47,7 @@ const TopSellers = () => {
       <div className="mb-8 flex items-center">
         <select
           onChange={(e) => setSelectedCategory(e.target.value)}
-          name="category"
-          id="category"
-          className="border bg-[#EAEAEA] border-gray-300 rounded-md px-4 py-2 focus:outline-none"
+          className="py-3 px-4 bg-white rounded-xl shadow-sm border border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent cursor-pointer"
         >
           {categories.map((category, index) => (
             <option key={index} value={category}>
@@ -92,18 +90,18 @@ const TopSellers = () => {
         className="mySwiper"
       >
         <div className="fixed top-5 right-5 bg-green-600 text-white px-4 py-2 rounded shadow-lg transition-opacity duration-300">
-        {filterBooks.length > 0 &&
-          filterBooks.map((book, index) => (
-            <SwiperSlide key={index}>
-              <BooksCard
-                book={book}
-                onAddToCart={(book) => {
-                  handleAddToCart(book, setAddedBook, setIsPopupVisible); // Call the function
-                }}
-              />
-            </SwiperSlide>
-          ))}
-          </div>
+          {filterBooks.length > 0 &&
+            filterBooks.map((book, index) => (
+              <SwiperSlide key={index}>
+                <BooksCard
+                  book={book}
+                  onAddToCart={(book) => {
+                    handleAddToCart(book, setAddedBook, setIsPopupVisible); // Call the function
+                  }}
+                />
+              </SwiperSlide>
+            ))}
+        </div>
       </Swiper>
     </div>
   );

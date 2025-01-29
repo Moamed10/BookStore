@@ -1,294 +1,316 @@
 import React, { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
-import axios from "axios"; // Import axios
+import {
+  BookOpen,
+  FileText,
+  Tag,
+  TrendingUp,
+  Image as ImageIcon,
+  FileCode,
+  DollarSign,
+  AlertCircle,
+  CheckCircle2,
+  Loader2,
+} from "lucide-react";
 
-const categories = [
-  "choose category",
-  "Business",
-  "Fiction",
-  "Horror",
-  "Adventure",
-];
+const categories = ["Business", "Fiction", "Horror", "Adventure"];
 
-const AddBook = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
-
+const ModernAddBook = () => {
   const [userId, setUserId] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [notification, setNotification] = useState({ message: "", type: "" });
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    category: "",
+    trending: false,
+    oldPrice: "",
+    newPrice: "",
+    coverImage: null,
+    pdfLink: "",
+  });
 
-  // Get the user ID from the token in localStorage (or wherever you store it)
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
-      const decoded = JSON.parse(atob(token.split(".")[1])); // Decode the JWT token
-      setUserId(decoded.id); // Assuming token contains 'id' for the user
+      const decoded = JSON.parse(atob(token.split(".")[1]));
+      setUserId(decoded.id);
     }
   }, []);
 
-  const onSubmit = async (data) => {
+  const handleInputChange = (e) => {
+    const { name, value, type, checked, files } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]:
+        type === "checkbox" ? checked : type === "file" ? files[0] : value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     if (!userId) {
-      console.error("User not authenticated");
+      setNotification({ message: "User not authenticated", type: "error" });
       return;
     }
 
-    const formData = new FormData();
-    formData.append("title", data.title);
-    formData.append("description", data.description);
-    formData.append("category", data.category);
-    formData.append("trending", data.trending);
-    formData.append("oldPrice", data.oldPrice);
-    formData.append("newPrice", data.newPrice);
-    formData.append("coverImage", data.coverImage[0]); // File upload
-    formData.append("authorId", userId); // Add the user ID to the form data
-    formData.append("pdfLink", data.pdfLink); // Add the PDF link to the form data
+    setLoading(true);
+    const submitData = new FormData();
+    Object.keys(formData).forEach((key) => {
+      if (key === "coverImage" && formData[key]) {
+        submitData.append(key, formData[key]);
+      } else {
+        submitData.append(key, formData[key]);
+      }
+    });
+    submitData.append("authorId", userId);
 
     try {
-      // Send the form data using axios to the backend URL
-      const response = await axios.post(
-        "http://localhost:5000/create-book", // Backend URL
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data", // Ensure the server knows it's multipart
-          },
-        }
-      );
+      const response = await fetch("http://localhost:5000/create-book", {
+        method: "POST",
+        body: submitData,
+      });
 
-      if (response.status === 200) {
-        setNotification({message:"Book added successfully",type:'success'})
-        console.log("Book added successfully");
-        // formData({title:'',description:'',category:'',trending:'',oldPrice:'',newPrice:'',coverImage:''})
+      if (response.ok) {
+        setNotification({
+          message: "Book added successfully",
+          type: "success",
+        });
+        setFormData({
+          title: "",
+          description: "",
+          category: "",
+          trending: false,
+          oldPrice: "",
+          newPrice: "",
+          coverImage: null,
+          pdfLink: "",
+        });
       } else {
-        console.error("Failed to add book");
-        throw new Error("Failed to add book")
+        throw new Error("Failed to add book");
       }
     } catch (error) {
-      console.error("Error adding book:", error);
-      setNotification({message:"Error adding book",type:''})
+      setNotification({ message: "Error adding book", type: "error" });
+    } finally {
+      setLoading(false);
+      setTimeout(() => setNotification({ message: "", type: "" }), 4000);
     }
-    setTimeout(() => {
-      setNotification({ message: "", type: "" });
-    }, 4000);
   };
-  
 
   return (
-    <div className="h-[calc(100vh-120px)] flex justify-center items-center">
-      <div className="w-full max-w-lg mx-auto bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-        <h2 className="text-xl font-semibold mb-4">Add a New Book</h2>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          {/* Title Field */}
-          <div className="mb-4">
+    <div className="min-h-screen bg-gray-100 p-8">
+      <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-xl p-8">
+        <div className="flex items-center gap-2 mb-8">
+          <BookOpen className="w-6 h-6 text-blue-600" />
+          <h2 className="text-2xl font-bold text-gray-800">Add New Book</h2>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Title */}
+          <div className="space-y-2">
             <label
-              className="block text-gray-700 text-sm font-bold mb-2"
               htmlFor="title"
+              className="flex items-center gap-2 text-sm font-medium text-gray-700"
             >
+              <FileText className="w-4 h-4" />
               Title
             </label>
             <input
-              {...register("title", { required: "Title is required" })}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="title"
               name="title"
-              type="text"
+              value={formData.title}
+              onChange={handleInputChange}
+              required
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               placeholder="Enter book title"
             />
-            {errors.title && (
-              <p className="text-red-500 text-xs italic">
-                {errors.title.message}
-              </p>
-            )}
           </div>
 
-          {/* Description Field */}
-          <div className="mb-4">
+          {/* Description */}
+          <div className="space-y-2">
             <label
-              className="block text-gray-700 text-sm font-bold mb-2"
               htmlFor="description"
+              className="flex items-center gap-2 text-sm font-medium text-gray-700"
             >
+              <FileText className="w-4 h-4" />
               Description
             </label>
             <textarea
-              {...register("description", {
-                required: "Description is required",
-              })}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="description"
               name="description"
+              value={formData.description}
+              onChange={handleInputChange}
+              required
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg min-h-[100px] focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               placeholder="Enter book description"
-            ></textarea>
-            {errors.description && (
-              <p className="text-red-500 text-xs italic">
-                {errors.description.message}
-              </p>
-            )}
+            />
           </div>
 
-          {/* Category Field */}
-          <div className="mb-4">
+          {/* Category */}
+          <div className="space-y-2">
             <label
-              className="block text-gray-700 text-sm font-bold mb-2"
               htmlFor="category"
+              className="flex items-center gap-2 text-sm font-medium text-gray-700"
             >
+              <Tag className="w-4 h-4" />
               Category
             </label>
             <select
-              {...register("category", { required: "Category is required" })}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="category"
               name="category"
+              value={formData.category}
+              onChange={handleInputChange}
+              required
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
-              {categories.map((cat, index) => (
-                <option key={index} value={cat}>
+              <option value="">Select category</option>
+              {categories.map((cat) => (
+                <option key={cat} value={cat}>
                   {cat}
                 </option>
               ))}
             </select>
-            {errors.category && (
-              <p className="text-red-500 text-xs italic">
-                {errors.category.message}
-              </p>
-            )}
           </div>
 
-          {/* Trending Checkbox */}
-          <div className="mb-4">
-            <label
-              className="block text-gray-700 text-sm font-bold mb-2"
-              htmlFor="trending"
-            >
-              Trending
+          {/* Trending Switch */}
+          <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+            <div className="flex items-center gap-2">
+              <TrendingUp className="w-4 h-4" />
+              <label
+                htmlFor="trending"
+                className="text-sm font-medium text-gray-700"
+              >
+                Mark as Trending
+              </label>
+            </div>
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                id="trending"
+                name="trending"
+                checked={formData.trending}
+                onChange={handleInputChange}
+                className="sr-only peer"
+              />
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
             </label>
-            <input
-              {...register("trending")}
-              className="mr-2 leading-tight"
-              type="checkbox"
-              id="trending"
-              name="trending"
-            />
-            <span className="text-sm">Mark as trending</span>
           </div>
 
-          {/* Cover Image Field */}
-          <div className="mb-4">
+          {/* Cover Image */}
+          <div className="space-y-2">
             <label
-              className="block text-gray-700 text-sm font-bold mb-2"
               htmlFor="coverImage"
+              className="flex items-center gap-2 text-sm font-medium text-gray-700"
             >
+              <ImageIcon className="w-4 h-4" />
               Cover Image
             </label>
             <input
-              {...register("coverImage", {
-                required: "Cover Image is required",
-              })}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="coverImage"
               name="coverImage"
               type="file"
               accept="image/*"
+              onChange={handleInputChange}
+              required
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
-            {errors.coverImage && (
-              <p className="text-red-500 text-xs italic">
-                {errors.coverImage.message}
-              </p>
-            )}
           </div>
 
-          {/* PDF Link Field */}
-          <div className="mb-4">
+          {/* PDF Link */}
+          <div className="space-y-2">
             <label
-              className="block text-gray-700 text-sm font-bold mb-2"
               htmlFor="pdfLink"
+              className="flex items-center gap-2 text-sm font-medium text-gray-700"
             >
+              <FileCode className="w-4 h-4" />
               PDF Link
             </label>
             <input
-              {...register("pdfLink", { required: "PDF link is required" })}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="pdfLink"
               name="pdfLink"
-              type="text"
+              value={formData.pdfLink}
+              onChange={handleInputChange}
+              required
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               placeholder="Enter PDF link or path"
             />
-            {errors.pdfLink && (
-              <p className="text-red-500 text-xs italic">
-                {errors.pdfLink.message}
-              </p>
-            )}
           </div>
 
-          {/* Old Price Field */}
-          <div className="mb-4">
-            <label
-              className="block text-gray-700 text-sm font-bold mb-2"
-              htmlFor="oldPrice"
-            >
-              Old Price
-            </label>
-            <input
-              {...register("oldPrice", { required: "Old price is required" })}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="oldPrice"
-              name="oldPrice"
-              type="number"
-              placeholder="Enter old price"
-            />
-            {errors.oldPrice && (
-              <p className="text-red-500 text-xs italic">
-                {errors.oldPrice.message}
-              </p>
-            )}
+          {/* Prices */}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <label
+                htmlFor="oldPrice"
+                className="flex items-center gap-2 text-sm font-medium text-gray-700"
+              >
+                <DollarSign className="w-4 h-4" />
+                Old Price
+              </label>
+              <input
+                id="oldPrice"
+                name="oldPrice"
+                type="number"
+                value={formData.oldPrice}
+                onChange={handleInputChange}
+                required
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="0.00"
+              />
+            </div>
+            <div className="space-y-2">
+              <label
+                htmlFor="newPrice"
+                className="flex items-center gap-2 text-sm font-medium text-gray-700"
+              >
+                <DollarSign className="w-4 h-4" />
+                New Price
+              </label>
+              <input
+                id="newPrice"
+                name="newPrice"
+                type="number"
+                value={formData.newPrice}
+                onChange={handleInputChange}
+                required
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="0.00"
+              />
+            </div>
           </div>
 
-          {/* New Price Field */}
-          <div className="mb-4">
-            <label
-              className="block text-gray-700 text-sm font-bold mb-2"
-              htmlFor="newPrice"
-            >
-              New Price
-            </label>
-            <input
-              {...register("newPrice", { required: "New price is required" })}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="newPrice"
-              name="newPrice"
-              type="number"
-              placeholder="Enter new price"
-            />
-            {errors.newPrice && (
-              <p className="text-red-500 text-xs italic">
-                {errors.newPrice.message}
-              </p>
+          <button
+            type="submit"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={loading}
+          >
+            {loading ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" /> Adding Book...
+              </>
+            ) : (
+              "Add Book"
             )}
-          </div>
-
-          {/* Submit Button */}
-          <div className="flex items-center justify-between">
-            <button
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-              type="submit"
-            >
-              Add Book
-            </button>
-          </div>
+          </button>
         </form>
+
+        {notification.message && (
+          <div
+            className={`mt-4 p-4 rounded-lg flex items-center gap-2 ${
+              notification.type === "success"
+                ? "bg-green-50 text-green-800"
+                : "bg-red-50 text-red-800"
+            }`}
+          >
+            {notification.type === "success" ? (
+              <CheckCircle2 className="w-4 h-4" />
+            ) : (
+              <AlertCircle className="w-4 h-4" />
+            )}
+            <p>{notification.message}</p>
+          </div>
+        )}
       </div>
-      {notification.message && (
-        <div
-          className={`mt-4 p-4 rounded-md ${
-            notification.type === "success" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
-          }`}
-        >
-          {notification.message}
-        </div>
-      )}
     </div>
   );
 };
 
-export default AddBook;
+export default ModernAddBook;

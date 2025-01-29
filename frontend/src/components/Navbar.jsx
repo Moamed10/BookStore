@@ -24,7 +24,6 @@ const Navbar = () => {
     const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
     setCartCount(totalItems);
 
-    // Add scroll listener
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
     };
@@ -33,20 +32,11 @@ const Navbar = () => {
   }, []);
 
   const handleLogout = () => {
-    // Remove user data and token from localStorage
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-
-    // Also remove cart data from localStorage when logging out
     localStorage.removeItem("cart");
-
-    // Clear the current user state
     setCurrentUser(null);
-
-    // Redirect to login page
     navigate("/login");
-
-    // Reload the page to reflect the logout changes (clear cart)
     window.location.reload();
   };
 
@@ -55,11 +45,6 @@ const Navbar = () => {
       name: "All Books",
       href: "/books",
       icon: "📚",
-    },
-    {
-      name: "Cart Page",
-      href: "/cart",
-      icon: "🛒",
     },
     {
       name: "Profile",
@@ -93,7 +78,6 @@ const Navbar = () => {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5 }}
-              className="flex items-center"
             >
               <Link
                 to="/"
@@ -103,27 +87,11 @@ const Navbar = () => {
               </Link>
             </motion.div>
 
-            {/* Right Side Navigation */}
-            <div className="flex items-center space-x-6">
+            {/* Right Side Elements */}
+            <div className="flex items-center space-x-4">
               {currentUser ? (
                 <>
-                  {/* Sell Book Button for Sellers */}
-                  {currentUser.role === "seller" && (
-                    <motion.div
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      <Link
-                        to="/Addbook"
-                        className="group bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white text-sm font-medium py-2 px-4 rounded-lg shadow-lg transition duration-300 flex items-center space-x-2 hover:shadow-blue-500/25"
-                      >
-                        <FaBookMedical className="text-lg group-hover:rotate-12 transition-transform duration-300" />
-                        <span>Sell Book</span>
-                      </Link>
-                    </motion.div>
-                  )}
-
-                  {/* User Avatar and Dropdown */}
+                  {/* Profile Dropdown */}
                   <div className="relative">
                     <motion.button
                       whileHover={{ scale: 1.1 }}
@@ -191,9 +159,9 @@ const Navbar = () => {
                   >
                     <Link
                       to="/cart"
-                      className="group bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-2 px-4 rounded-lg shadow-lg transition duration-300 flex items-center space-x-2 hover:shadow-blue-500/25"
+                      className="group bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-2.5 px-4 rounded-lg shadow-lg transition duration-300 flex items-center space-x-2 hover:shadow-blue-500/25"
                     >
-                      <FaCartShopping className="text-xl group-hover:rotate-12 transition-transform duration-300" />
+                      <FaCartShopping className="text-lg group-hover:rotate-12 transition-transform duration-300" />
                       <span className="text-sm font-medium">
                         Cart
                         <span className="ml-1 bg-white/20 px-2 py-0.5 rounded-full">
@@ -202,9 +170,24 @@ const Navbar = () => {
                       </span>
                     </Link>
                   </motion.div>
+
+                  {/* Sell Book Button */}
+                  {currentUser.role === "seller" && (
+                    <motion.div
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      <Link
+                        to="/Addbook"
+                        className="group bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white text-sm font-medium py-2.5 px-4 rounded-lg shadow-lg transition duration-300 flex items-center space-x-2 hover:shadow-blue-500/25"
+                      >
+                        <FaBookMedical className="text-lg group-hover:rotate-12 transition-transform duration-300" />
+                        <span>Sell Book</span>
+                      </Link>
+                    </motion.div>
+                  )}
                 </>
               ) : (
-                // Auth Buttons for Non-logged Users
                 <div className="flex space-x-4">
                   <motion.div
                     whileHover={{ scale: 1.05 }}
@@ -212,7 +195,7 @@ const Navbar = () => {
                   >
                     <Link
                       to="/signup"
-                      className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition duration-300 text-sm font-medium shadow-lg hover:shadow-blue-500/25"
+                      className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg transition duration-300 text-sm font-medium shadow-lg hover:shadow-blue-500/25"
                     >
                       Sign Up
                     </Link>
@@ -223,7 +206,7 @@ const Navbar = () => {
                   >
                     <Link
                       to="/login"
-                      className="bg-gray-700 hover:bg-gray-600 text-white px-6 py-2 rounded-lg transition duration-300 text-sm font-medium shadow-lg"
+                      className="bg-gray-700 hover:bg-gray-600 text-white px-6 py-2.5 rounded-lg transition duration-300 text-sm font-medium shadow-lg"
                     >
                       Login
                     </Link>
@@ -235,7 +218,6 @@ const Navbar = () => {
         </nav>
       </header>
 
-      {/* Add some margin-top to the content after the navbar */}
       <div style={{ marginTop: "80px" }}>{/* Your content here */}</div>
     </>
   );
