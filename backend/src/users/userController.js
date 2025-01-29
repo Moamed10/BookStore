@@ -1,7 +1,6 @@
 const bcrypt = require("bcrypt");
 const User = require("./userModel");
 const Book = require("../books/bookModel"); // Assuming you have a Book model
-
 const jwt = require("jsonwebtoken");
 
 // Sign up user
@@ -9,35 +8,22 @@ exports.signup = async (req, res) => {
   const { username, email, password, role } = req.body;
 
   try {
-    // Validate input data
     if (!username || !email || !password) {
       return res.status(400).json({ error: "All fields are required" });
     }
 
-    // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ error: "Email already in use" });
     }
 
-    // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Create a new user
-    const user = new User({
-      username,
-      email,
-      password: hashedPassword,
-      role,
-    });
-
-    // Save the user to the database
+    const user = new User({ username, email, password: hashedPassword, role });
     await user.save();
 
-    // Return success response
     return res.status(201).json({ message: "User registered successfully" });
   } catch (err) {
-    console.error(err); // Log the error for debugging
+    console.error(err);
     return res.status(500).json({ error: "Internal server error" });
   }
 };
@@ -47,33 +33,26 @@ exports.login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    // Input validation
     if (!email || !password) {
-      return res
-        .status(400)
-        .json({ error: "Both email and password are required." });
+      return res.status(400).json({ error: "Both email and password are required." });
     }
 
-    // Find user in the database, populate the boughtBooks field
     const user = await User.findOne({ email }).populate("boughtBooks");
     if (!user) {
       return res.status(401).json({ error: "Incorrect email or password." });
     }
 
-    // Compare the hashed password
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
     if (!isPasswordCorrect) {
       return res.status(401).json({ error: "Incorrect email or password." });
     }
 
-    // Generate JWT token
     const token = jwt.sign(
       { id: user._id, role: user.role, email: user.email },
-      process.env.JWT_SECRET || "yourSecretKeyHere", // Make sure to use a secure secret
-      { expiresIn: "1d" } // Adjust token expiration as needed
+      process.env.JWT_SECRET || "yourSecretKeyHere",
+      { expiresIn: "1d" }
     );
 
-    // Send response with token and user data
     return res.status(200).json({
       message: "Login successful!",
       token,
@@ -82,18 +61,45 @@ exports.login = async (req, res) => {
         username: user.username,
         role: user.role,
         email: user.email,
-        boughtBooks: user.boughtBooks, // Consider only sending book IDs or necessary info if this is large
+        boughtBooks: user.boughtBooks,
       },
     });
   } catch (error) {
     console.error("Login error:", error);
-    return res
-      .status(500)
-      .json({ error: "An error occurred. Please try again later." });
+    return res.status(500).json({ error: "An error occurred. Please try again later." });
   }
 };
 
-// Purchase a book (add purchased book to user)
+// Change user password
+exports.changePassword = async (req, res) => {
+  const { email, oldPassword, newPassword } = req.body;
+
+  try {
+    if (!email || !oldPassword || !newPassword) {
+      return res.status(400).json({ error: "Email, old password, and new password are required." });
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ error: "User not found." });
+    }
+
+    const isPasswordCorrect = await bcrypt.compare(oldPassword, user.password);
+    if (!isPasswordCorrect) {
+      return res.status(401).json({ error: "Incorrect old password." });
+    }
+
+    user.password = await bcrypt.hash(newPassword, 10);
+    await user.save();
+
+    return res.status(200).json({ message: "Password changed successfully!" });
+  } catch (error) {
+    console.error("Error changing password:", error);
+    return res.status(500).json({ error: "Internal server error." });
+  }
+};
+
+// Purchase a book
 exports.purchaseBook = async (req, res) => {
   const { userEmail, bookIds } = req.body;
 
@@ -109,17 +115,15 @@ exports.purchaseBook = async (req, res) => {
     }
 
     let booksAdded = 0;
-    for (let book of books) {
+    books.forEach(book => {
       if (!user.boughtBooks.includes(book._id)) {
         user.boughtBooks.push(book._id);
         booksAdded++;
       }
-    }
+    });
 
     if (booksAdded === 0) {
-      return res
-        .status(400)
-        .json({ error: "These books have already been purchased." });
+      return res.status(400).json({ error: "These books have already been purchased." });
     }
 
     await user.save();
@@ -133,36 +137,23 @@ exports.purchaseBook = async (req, res) => {
     return res.status(500).json({ error: "Failed to purchase books" });
   }
 };
+
+// Get bought books for a specific user
 exports.getBoughtBooks = async (req, res) => {
   try {
-    // Extract userId from the URL parameters
     const userId = req.params.userId;
-
-    // Find the user by their ID without populating the 'boughtBooks' field
     const user = await User.findById(userId);
-
-    // Check if the user exists
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // If no bought books are found, respond accordingly
     if (user.boughtBooks.length === 0) {
       return res.status(200).json({ message: "No bought books found" });
     }
 
-    // Respond with the list of bought books as an array of ObjectIds
-    res.status(200).json(user.boughtBooks); // This will return the array of ObjectIds
+    res.status(200).json(user.boughtBooks);
   } catch (error) {
     console.error(error);
-    res
-      .status(500)
-      .json({ message: "An error occurred while retrieving bought books" });
+    res.status(500).json({ message: "An error occurred while retrieving bought books" });
   }
 };
-// Get bought books for a specific user
-// In userController.js
-
-// Get user's bought books based on userId
-// Get user's purchased books
-// userController.js
