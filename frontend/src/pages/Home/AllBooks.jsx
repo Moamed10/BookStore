@@ -14,7 +14,7 @@ export default function AllBooks() {
   const [isLoading, setIsLoading] = useState(true);
   const [visibleBooks, setVisibleBooks] = useState(8); // Visible books count
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const categories = [
     "choose category",
@@ -92,8 +92,8 @@ export default function AllBooks() {
                 placeholder="Search for books..."
                 className="w-full pl-12 pr-4 py-3 bg-white rounded-xl shadow-sm border border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-shadow"
                 onChange={(e) => {
-                  searchParams.set("q", e.target.value);
-                  setIsLoading(true);
+                  const query = e.target.value;
+                  setSearchParams({ q: query }); // Correctly updating search params
                 }}
               />
             </div>
