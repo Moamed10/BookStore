@@ -15,6 +15,7 @@ export default function AllBooks() {
   const [visibleBooks, setVisibleBooks] = useState(8); // Visible books count
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
+  const [searchLabel, setSearchLabel] = useState();
 
   const categories = [
     "choose category",
@@ -30,7 +31,9 @@ export default function AllBooks() {
 
   useEffect(() => {
     const query = searchParams.get("q");
+    setSearchLabel(query);
 
+    
     axios
       .get("http://localhost:5000/all-books")
       .then((result) => {
@@ -95,6 +98,7 @@ export default function AllBooks() {
                   const query = e.target.value;
                   setSearchParams({ q: query }); // Correctly updating search params
                 }}
+                value={searchLabel}
               />
             </div>
 
