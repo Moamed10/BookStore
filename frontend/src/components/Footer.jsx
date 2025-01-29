@@ -38,7 +38,7 @@ const Footer = () => {
               Quick Links
               <span className="absolute -bottom-2 left-0 w-12 h-1 bg-blue-500"></span>
             </h3>
-            <ul className="grid grid-cols-2 gap-2">
+            <ul className="grid grid-cols-1 gap-2">
               {["About-us", "Books", "Contact"].map((item) => (
                 <li key={item}>
                   <a
