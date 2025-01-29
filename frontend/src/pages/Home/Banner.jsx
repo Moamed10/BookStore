@@ -2,17 +2,17 @@ import React, { useState } from "react";
 import "../../App.css"; // Correct path (avoid absolute paths if possible)
 import booksImage from "../../assets/img1.png"; // Correct relative path
 import { Link } from "react-router-dom";
-import  Search  from "../../components/Search";
+import Search from "../../components/Search";
 
 console.log(booksImage);
 
 const Banner = () => {
-// const [results,setResults] =useState([])
+  // const [results,setResults] =useState([])
 
   return (
     <div className="flex flex-col py-6 md:py-10 justify-center items-center gap-6 md:gap-8">
       {/* Search Bar Section */}
-      <Search/>
+      <Search />
 
       {/* Content Section (Text on the left, Image on the right) */}
       <div className="flex flex-col md:flex-row items-center justify-between w-full max-w-7xl px-4">

@@ -36,7 +36,9 @@ const Profile = () => {
               {user.username.charAt(0).toUpperCase()}
             </span>
           </div>
-          <h2 className="text-3xl font-bold text-white mb-2">{user.username}</h2>
+          <h2 className="text-3xl font-bold text-white mb-2">
+            {user.username}
+          </h2>
           <p className="text-gray-400">{user.email}</p>
         </div>
 
@@ -71,7 +73,9 @@ const Profile = () => {
                 <Shield className="w-6 h-6 text-blue-400" />
                 <label className="text-lg text-gray-300">Role</label>
               </div>
-              <p className="text-lg text-white capitalize mt-2 md:mt-0">{user.role}</p>
+              <p className="text-lg text-white capitalize mt-2 md:mt-0">
+                {user.role}
+              </p>
             </div>
           </div>
         </div>
