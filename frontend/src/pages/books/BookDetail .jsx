@@ -98,7 +98,7 @@ const BookDetail = () => {
                 <img
                   src={getImgUrl(recommendedBook.coverImage)}
                   alt={recommendedBook.title}
-                  className="w-full h-60 object-cover object-center"
+                  className="w-full h-90 object-cover object-center"
                 />
                 <div className="p-2 text-center">
                   <h2 className="text-sm font-semibold mb-1 text-gray-800">

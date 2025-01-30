@@ -1,6 +1,14 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { User, Mail, Shield, BookOpen, KeyRound, LogOut } from "lucide-react";
+import {
+  User,
+  Mail,
+  Shield,
+  BookOpen,
+  KeyRound,
+  LogOut,
+  Library,
+} from "lucide-react";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -91,6 +99,13 @@ const Profile = () => {
               <span>Manage My Books</span>
             </button>
           )}
+          <button
+            onClick={() => navigate("/my-library")}
+            className="w-full flex items-center justify-center py-3 px-6 bg-green-600 text-white text-lg rounded-xl hover:bg-yellow-600 transition-all duration-300 shadow-lg hover:shadow-yellow-500/25 space-x-2"
+          >
+            <Library className="w-5 h-5" />
+            <span>My Library</span>
+          </button>
 
           {/* Change Password Button */}
           <button
