@@ -83,7 +83,7 @@ const Navbar = () => {
                 to="/"
                 className="transition-transform duration-300 hover:scale-105"
               >
-                <img src={logo} alt="Logo" className="h-16 w-auto sm:h-20" />
+                <img src={logo} alt="Logo" className="h-32 w-auto sm:h-36" />
               </Link>
             </motion.div>
 
