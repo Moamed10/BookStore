@@ -67,3 +67,7 @@
   align-items: center;
   height: 40px;
 }
+
+.logo-container {
+  width: 100px;
+}
