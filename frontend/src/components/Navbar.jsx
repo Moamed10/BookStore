@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import avatarImg from "../assets/user.png";
-import logo from "../assets/logo2.png";
+import logo from "../assets/logo2-2.png";
 import { FaCartShopping } from "react-icons/fa6";
 import { FaBookMedical } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
@@ -74,18 +74,20 @@ const Navbar = () => {
         <nav className="max-w-screen-2xl mx-auto px-6 py-4">
           <div className="flex justify-between items-center">
             {/* Logo */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5 }}
-            >
-              <Link
-                to="/"
-                className="transition-transform duration-300 hover:scale-105"
-              >
-                <img src={logo} alt="Logo" className="h-32 w-auto sm:h-36" />
-              </Link>
-            </motion.div>
+            <div className="logo-container">
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5 }}
+                >
+                <Link
+                  to="/"
+                  className="transition-transform duration-300 hover:scale-105"
+                  >
+                  <img src={logo} alt="Logo" className="" />
+                </Link>
+              </motion.div>
+            </div>
 
             {/* Right Side Elements */}
             <div className="flex items-center space-x-4">
